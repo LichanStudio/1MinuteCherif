@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c6f1545c684a8349ada58469c92883e, type: 3}
+  m_Name: Enemy_MoveSpeed
+  m_EditorClassIdentifier: Assembly-CSharp::Upgrade
+  _id: enemy-move-speed
+  _upgradeData:
+    _isEnemyUpgrade: 1
+    _definitiveMax: 0
+    _definitiveMin: 0
+    _definitiveCost: 0
+    _sessionMin: 20
+    _sessionMax: 70
+    _upgradeType: 3

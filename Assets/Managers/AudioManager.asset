@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f21334983d750694092f438a8b66805a, type: 3}
+  m_Name: AudioManager
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  MainMusicSource: {fileID: 0}
+  SoundsSources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  SongsBattle:
+  - {fileID: 8300000, guid: 850ec0e6e658136438ae7f661e01d9c1, type: 3}
+  SongsSaloon:
+  - {fileID: 8300000, guid: 1e0ef585bdce40046b1c71252d40fdbe, type: 3}
+  SoundsHit:
+  - {fileID: 8300000, guid: 5b7a91f031b176744a72179799bdd900, type: 3}
+  - {fileID: 8300000, guid: 82960c2f891a01541b954471e2db78e9, type: 3}
+  SoundsShoot:
+  - {fileID: 8300000, guid: 0f19afb4570b4244bb5f0739454049ce, type: 3}
+  - {fileID: 8300000, guid: b4d178c6c18050a4d90ee03114cd1c2b, type: 3}
+  - {fileID: 8300000, guid: 4e9a469c79090ed4686b842b71a47d1b, type: 3}
+  - {fileID: 8300000, guid: 4f3f104bde4e5ef4dad0c54ff383ac8e, type: 3}
+  - {fileID: 8300000, guid: c3eb86b165d5fb64cb0a5b7560036c4f, type: 3}
+  SoundsBuy:
+  - {fileID: 8300000, guid: 71c57ef83550af842a356e7f402dc534, type: 3}
+  - {fileID: 8300000, guid: 138e0292883390444b73655f43bfd8be, type: 3}
+  - {fileID: 8300000, guid: 8bf11446088885c4096f3d4271fa282a, type: 3}
