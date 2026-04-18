@@ -39,13 +39,13 @@ public class SaloonScript : MonoBehaviour
 
     public void OnTryBuyUpgrade(Upgrade upgrade)
     {
-        if (_gameManager.GetGolds() > upgrade.GetUpgradeData().DefinitiveCost)
+        /*if (_gameManager.GetGolds() > upgrade.GetUpgradeData().DefinitiveCost)
         {
             _gameManager.OnBuyDefinitiveUpgrade(upgrade);
             foreach (DefinitiveUpgradeScript defUpgrade in _definitiveUpgrades)
             {
                 defUpgrade.gameObject.SetActive(false);
             }
-        }
+        }*/
     }
 }

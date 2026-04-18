@@ -1,34 +1,45 @@
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
-[CreateAssetMenu(fileName = "MovementManager", menuName = "ScriptableObjects/Managers/Movement", order = 1)]
-public class MovementManager : ScriptableObject
+[DefaultExecutionOrder(-100)]
+public class MovementManager : MonoBehaviour
 {
-    private GameObject _player;
-
-    public void SetPlayer(GameObject player)
+    public enum MovementDirection
     {
-        _player = player;
+        Up,
+        Down,
+        Left,
+        Right
     }
 
-    public GameObject GetPlayer()
+    public enum MovementType
     {
-        return _player;
+        Idle,
+        Run
+    }
+
+    public static MovementManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
     }
 
     public Vector2 MoveTowardPlayer(GameObject objectToMove, float stoppingDistance = 0f)
     {
-        if (_player == null || objectToMove == null) return Vector2.zero;
-        float distance = Vector2.Distance(objectToMove.transform.position, _player.transform.position);
-        if (distance > stoppingDistance) return ((Vector2)_player.transform.position - (Vector2)objectToMove.transform.position).normalized;
+        if (PlayerManager.Instance == null || objectToMove == null) return Vector2.zero;
+        float distance = Vector2.Distance(objectToMove.transform.position, PlayerManager.Instance.PlayerObject.transform.position);
+        if (distance > stoppingDistance) return (Vector2)(PlayerManager.Instance.PlayerObject.transform.position - objectToMove.transform.position).normalized;
         return Vector2.zero;
     }
 
     public void TeleportPlayer(Vector2 newPosition)
     {
-        if (_player == null) return;
-        _player.transform.position = newPosition;
+        if (PlayerManager.Instance == null || PlayerManager.Instance.PlayerObject == null) return;
+        PlayerManager.Instance.PlayerObject.transform.position = newPosition;
     }
 }

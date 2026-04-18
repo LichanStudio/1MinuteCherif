@@ -44,9 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b64baa86d94afb4f9d3584c5357da5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  _gameManager: {fileID: 11400000, guid: ac6640832424b904185f2c716cfc587e, type: 2}
-  _movementManager: {fileID: 11400000, guid: 09b1122596827984fb08925c575e257b, type: 2}
-  _entityManager: {fileID: 11400000, guid: 312a2c7bd63700a4aa901285fccc037c, type: 2}
   _enemyPrefab: {fileID: 4097810212998132409, guid: 212beff5ccbe45a45836e842bb35d377, type: 3}
   _maxDistance: 30
   _minDistance: 10
@@ -187,7 +184,7 @@ Animator:
   m_GameObject: {fileID: 7606346397610505585}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: -3294355278195611385, guid: c34c38a1d76f6f14190dd4c63d837d39, type: 3}
+  m_Controller: {fileID: 8542494022596924086, guid: 888662263778ff846a59a5eb98995d5d, type: 3}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -251,8 +248,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1540fec0dcb205546bebcf9ea506a2b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameplayScript
-  _gameManager: {fileID: 11400000, guid: ac6640832424b904185f2c716cfc587e, type: 2}
-  _playerDataManager: {fileID: 11400000, guid: 9fefd011235b88541a80e367bc04b747, type: 2}
   _projectilePrefab: {fileID: 6342127833248704996, guid: 9c268c0fe6c6bd34d923d8377a60ce12, type: 3}
   _EscUI: {fileID: 0}
 --- !u!114 &4434260614638297102
@@ -267,9 +262,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b99bd76b86d4e594189de6260cc074fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementScript
-  _movementManager: {fileID: 11400000, guid: 09b1122596827984fb08925c575e257b, type: 2}
-  _playerDataManager: {fileID: 11400000, guid: 9fefd011235b88541a80e367bc04b747, type: 2}
-  _playerEntity: {fileID: 11400000, guid: 933fe39bdeb77f14b9ad147c6a862ea0, type: 2}
   _playerAnimator: {fileID: 2168014114883033614}
 --- !u!50 &8589144656303272451
 Rigidbody2D:
@@ -432,5 +424,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a16dea9b5468b54fb2aced87802eb1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerScript
-  _playerDataManager: {fileID: 11400000, guid: 9fefd011235b88541a80e367bc04b747, type: 2}
   _HPStatusBar: {fileID: 0}
+  _playerAnimator: {fileID: 2168014114883033614}

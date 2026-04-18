@@ -3,34 +3,34 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "GameManager", menuName = "ScriptableObjects/Managers/Game", order = 1)]
-public class GameManager : ScriptableObject
+public class GameManager : MonoBehaviour
 {
-    [Header("Managers")]
-    [SerializeField] private PlayerDataManager _playerDataManager;
+    public static GameManager Instance { get; private set; }
 
     [Header("Settings")]
-    [SerializeField] private int _secondsToPlay = 60;
-    private int _currentSeconds = 0;
-    private int _killedEnemies = 0;
-    private GlobalLightScript _globalLight;
+    [SerializeField] private GameData _gameData;
+
+    private int _countSeconds = 0;
+    private int _countKills = 0;
     private bool _isGamePaused = false;
-    private int _golds = 0;
 
     private List<Upgrade> _sessionUpgrades = new();
     private Dictionary<string, Upgrade>_definitivesUpgrades = new();
 
-    public void LoadGame()
+    private void Awake()
     {
-        ResetSessionUgrades();
-        _definitivesUpgrades.Clear();
-        _playerDataManager.LoadPlayerData(_definitivesUpgrades);
-        _golds = 0;
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
-    public void SaveGame()
+    private void OnEnable()
     {
-
+        ActionsManager.OnStartSession?.Invoke();
     }
 
     public void ResetSessionUgrades()
@@ -38,53 +38,30 @@ public class GameManager : ScriptableObject
         _sessionUpgrades.Clear();
     }
 
-    public int GetSecondsLeft()
-    {
-        return _secondsToPlay - _currentSeconds;
-    }
-
-    public void AddSeconds(int seconds)
-    {
-        _currentSeconds += seconds;
-        if (_currentSeconds > _secondsToPlay) _currentSeconds = _secondsToPlay;
-        else if (_currentSeconds < 0) _currentSeconds = 0;
-    }
-
-    public void ResetSeconds()
-    {
-        _currentSeconds = 0;
-    }
-
-    public void AddKilledEnemy() => _killedEnemies++;
+    public void AddKilledEnemy() => _countKills++;
     
-    public int GetKilledEnemies() => _killedEnemies;
+    public int GetKilledEnemies() => _countKills;
 
-    public void ResetKilledEnemies() => _killedEnemies = 0;
+    public void ResetKilledEnemies() => _countKills = 0;
 
-    public int GetTimePlayed() => _currentSeconds;
+    public int GetTimePlayed() => _countSeconds;
 
-    public int GetSessionDuration() => _secondsToPlay;
-
-    public int GetGolds() => _golds;
-
-    public void AddGolds(int golds) { _golds += golds; }
+    public int GetSessionDuration() => _gameData.SecondsToPlay;
 
     public void StartNewSession()
     {
         ResetSessionUgrades();
-        ResetSeconds();
         ResetKilledEnemies();
-        _playerDataManager.LoadPlayerData(_definitivesUpgrades);
     }
 
     public void SetGlobalLightScript(GlobalLightScript globalLight)
     {
-        _globalLight = globalLight;
+        //_globalLight = globalLight;
     }
 
     public void SetGlobalLight(float intensity)
     {
-        if (_globalLight != null) _globalLight.SetGlobalLightIntensity(intensity);
+        //if (_globalLight != null) _globalLight.SetGlobalLightIntensity(intensity);
     }
 
     public void TogglePause(bool pause)
@@ -101,17 +78,17 @@ public class GameManager : ScriptableObject
 
     public void OnPlayerKilled()
     {
-        _golds /= 2;
+
     }
 
     public void OnBuyDefinitiveUpgrade(Upgrade upgrade)
     {
-        if (_golds > upgrade.GetUpgradeData().DefinitiveCost)
+        /*if (_golds > upgrade.GetUpgradeData().DefinitiveCost)
         {
             _golds -= upgrade.GetUpgradeData().DefinitiveCost;
             if (_definitivesUpgrades.ContainsKey(upgrade.GetId())) _definitivesUpgrades[upgrade.GetId()].GetUpgradeData().CombineData(upgrade);
             else _definitivesUpgrades.Add(upgrade.GetId(), upgrade);
             ActionsManager.OnSelectDefinitiveUpgrade?.Invoke(upgrade);
-        }
+        }*/
     }
 }

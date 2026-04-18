@@ -16,7 +16,6 @@ public class TilesGeneratorScript : MonoBehaviour
     public TileBase rockRuleTile;
 
     [Header("Settings")]
-    public Transform player;
     public int chunkSize = 16;
     public int viewDistance = 3;
     public int keepDistance = 5;
@@ -51,7 +50,8 @@ public class TilesGeneratorScript : MonoBehaviour
 
     void Update()
     {
-        if (player == null) return;
+        if (PlayerManager.Instance == null || PlayerManager.Instance.PlayerObject == null) return;
+        Transform player = PlayerManager.Instance.PlayerObject.transform;
 
         int currentChunkX = Mathf.FloorToInt(player.position.x / chunkSize);
         int currentChunkY = Mathf.FloorToInt(player.position.y / chunkSize);

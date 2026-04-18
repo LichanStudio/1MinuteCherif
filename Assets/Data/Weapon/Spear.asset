@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b8ddc70786ce85448cb901e82e0dbb5, type: 3}
+  m_Name: Spear
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  _ID: spear
+  _name: Spear
+  _enablePiercing: 1
+  _basePiercing: 1
+  _enableBouncing: 0
+  _baseBouncing: 0
+  _enableMultiShot: 0
+  _baseMultiShot: 0
+  _enableMultiHit: 0
+  _baseMultiHit: 0
+  _projectileType: 2
+  _projectileSpeed: 120
+  _weapons:
+  - AdditionalDamage: 5
+    ProjectileAnimator: {fileID: 0}
+    HitAnimator: {fileID: 0}
+    Sprite: {fileID: -1914518196827981927, guid: 5b2cc8ba5b68e784e925a00201dd8f41, type: 3}
+  _weaponPrefab: {fileID: 5590576436893789190, guid: befe2f3a68071b54d8de62c2d322c0c0, type: 3}

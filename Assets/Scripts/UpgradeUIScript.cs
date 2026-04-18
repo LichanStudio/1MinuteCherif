@@ -8,9 +8,6 @@ using UnityEngine.EventSystems;
 
 public class UpgradeUIScript : MonoBehaviour, IPointerClickHandler
 {
-    [Header("Managers")]
-    [SerializeField] private PlayerDataManager _playerDataManager;
-
     [Header("Upgrade UI Elements")]
     [SerializeField] private GameObject _upgradeLinePrefab;
     [SerializeField] private GameObject _playerUpgradesParent;
@@ -76,7 +73,6 @@ public class UpgradeUIScript : MonoBehaviour, IPointerClickHandler
     {
         if (_canClick && eventData.button == PointerEventData.InputButton.Left)
         {
-            _playerDataManager.OnSelectUpgrade(_playerUpgrades);
             ActionsManager.OnSelectUpgrade?.Invoke(_playerUpgrades, _enemyUpgrades);
         }
     }

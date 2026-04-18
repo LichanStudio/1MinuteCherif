@@ -2,87 +2,86 @@ using UnityEngine;
 
 public class EnemyScript : MonoBehaviour
 {
-    [Header("Managers")]
-    [SerializeField] private GameManager _gameManager;
-    [SerializeField] private MovementManager _movementManager;
-
     [Header("Settings")]
-    [SerializeField] private float _speed = 3f;
     [SerializeField] private float _stoppingDistance = 1.5f;
     [SerializeField] private float _attackRange = 1.5f;
     [SerializeField] private float _attackSpeed = 1f;
-    [SerializeField] private Entity _entityData;
     [SerializeField] private StatusBarScript _statusBar;
 
     private Rigidbody2D _rigidBody;
-    private Entity _entity;
+    private MonsterData _entity;
     private float _timeSinceLastAttack = 0f;
+    private float _speed = 5f;
+    private int _damageTaken = 0;
 
     public void Awake()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
-        if (_entityData != null)
-        {
-            _entity = _entityData.Clone();
-            _statusBar.SetMaxValue(_entity.GetHp());
-            _statusBar.SetCurrentValue(_entity.GetHp());
-        }
     }
 
     public void OnEnable()
     {
         _timeSinceLastAttack = 99f;
-        ActionsManager.OnDamageEnemy += HandleDamage;
+        _damageTaken = 0;
         ActionsManager.OnEndSession += HandleSessionEnd;
-        ActionsManager.OnEntityKilled += HandleEntityKilled;
     }
 
     public void OnDisable()
     {
-        ActionsManager.OnDamageEnemy -= HandleDamage;
         ActionsManager.OnEndSession -= HandleSessionEnd;
-        ActionsManager.OnEntityKilled -= HandleEntityKilled;
     }
 
     public void FixedUpdate()
     {
-        if (_entityData == null) return;
-        _rigidBody.linearVelocity = _movementManager.MoveTowardPlayer(gameObject, _stoppingDistance) * _entity.GetSpeed();
+        if (_entity == null || MovementManager.Instance == null) return;
+        _rigidBody.linearVelocity = MovementManager.Instance.MoveTowardPlayer(gameObject, _stoppingDistance) * _speed;
     }
 
     public void Update()
     {
-        float sqrDistance = (transform.position - _movementManager.GetPlayer().transform.position).sqrMagnitude;
+        if (PlayerManager.Instance == null || PlayerManager.Instance.PlayerObject == null) return;
+        float sqrDistance = (transform.position - PlayerManager.Instance.PlayerObject.transform.position).sqrMagnitude;
         float sqrRange = _attackRange * _attackRange;
 
         _timeSinceLastAttack += Time.deltaTime;
         if (_timeSinceLastAttack >= _attackSpeed && sqrDistance < sqrRange)
         {
-            ActionsManager.OnDamagePlayer?.Invoke(_entity.GetDamage());
+            //ActionsManager.OnDamagePlayer?.Invoke(_entity.GetDamage());
             _timeSinceLastAttack = 0;
         }
     }
 
-    private void HandleDamage(Entity entity, int damage)
+    public void TakeDamage(int damage)
     {
-        if (_entity != null && _entity == entity)
+        _damageTaken += damage;
+        if (_statusBar != null) _statusBar.SetCurrentValue(_entity.GetTotalStats().HP - _damageTaken);
+        if (_damageTaken >= _entity.GetTotalStats().HP)
         {
-            if (_statusBar != null) _statusBar.SetCurrentValue(_entity.GetHp());
+            HandleEntityKilled();
         }
     }
 
-    public void HandleEntityKilled(Entity entity)
+    private void HandleEntityKilled()
     {
-        if (entity == _entity)
-        {
-            if (_gameManager != null) _gameManager.AddKilledEnemy();
-            Destroy(gameObject);
-        }
+        //if (_gameManager != null) _gameManager.AddKilledEnemy();
+        //ActionsManager.OnEntityKilled?.Invoke(entity);
+        Destroy(gameObject);
     }
 
-    public Entity GetEntity()
+    public MonsterData GetEntity()
     {
         return _entity;
+    }
+
+    public void SetMonsterData(MonsterData monsterData)
+    {
+        _entity = monsterData;
+        _speed = monsterData.GetTotalStats().Speed / 10f;
+        if (_statusBar != null)
+        {
+            _statusBar.SetMaxValue(_entity.GetTotalStats().HP);
+            _statusBar.SetCurrentValue(_entity.GetTotalStats().HP);
+        }
     }
 
     private void HandleSessionEnd()

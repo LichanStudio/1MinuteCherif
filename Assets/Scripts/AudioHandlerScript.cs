@@ -37,7 +37,7 @@ public class AudioHandlerScript : MonoBehaviour
         ActionsManager.OnSelectDefinitiveUpgrade -= OnBuyUpgrade;
     }
 
-    private void OnDamageEnemy(Entity entity, int damage)
+    private void OnDamageEnemy(EntityData entity, int damage)
     {
         OnHit();
     }

@@ -24,9 +24,9 @@ public class GoldsScript : MonoBehaviour
         ActionsManager.OnSelectDefinitiveUpgrade -= OnSelectDefinitiveUpgrade;
     }
 
-    public void OnEntityKilled(Entity entity)
+    public void OnEntityKilled(MonsterData monsterData)
     {
-        _gameManager.AddGolds(entity.GetGolds());
+        //_gameManager.AddGolds(entity.GetGolds());
         UpdateGolds();
     }
 
@@ -43,6 +43,6 @@ public class GoldsScript : MonoBehaviour
 
     public void UpdateGolds()
     {
-        if (_goldAmount != null) _goldAmount.text = _gameManager.GetGolds().ToString();
+        //if (_goldAmount != null) _goldAmount.text = _gameManager.GetGolds().ToString();
     }
 }

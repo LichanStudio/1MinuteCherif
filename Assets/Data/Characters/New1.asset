@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e10977777fc0ec489e2c7d260b9192f, type: 3}
+  m_Name: New1
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterData
+  _ID: Eladria
+  _name: Eladria
+  _animator: {fileID: 8542494022596924086, guid: 888662263778ff846a59a5eb98995d5d, type: 3}
+  _weaponData: {fileID: 11400000, guid: aff11ae44774136409ccb27fb6598172, type: 2}
+  _baseStats:
+    MultishotChance: 0
+    Speed: 50
+    HP: 5
+    Damage: 10
+  _additionnalStats:
+    MultishotChance: 0
+    Speed: 0
+    HP: 0
+    Damage: 0
+  _isUnlockedByDefault: 1
+  _definitiveStats:
+    MultishotChance: 0
+    Speed: 0
+    HP: 0
+    Damage: 0

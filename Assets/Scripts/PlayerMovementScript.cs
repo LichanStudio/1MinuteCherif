@@ -4,37 +4,50 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovementScript : MonoBehaviour
 {
-    [Header("Managers")]
-    [SerializeField] private MovementManager _movementManager;
-    [SerializeField] private PlayerDataManager _playerDataManager;
-
     [Header("Settings")]
-    [SerializeField] private Entity _playerEntity;
     [SerializeField] private Animator _playerAnimator;
 
     private Rigidbody2D _rigidBody;
     private Vector2 _moveInput;
+    private MovementManager.MovementType _currentMovementType = MovementManager.MovementType.Idle;
+    private MovementManager.MovementType _lastMovementType = MovementManager.MovementType.Idle;
+    private MovementManager.MovementDirection _currentMovementDirection = MovementManager.MovementDirection.Down;
+    private MovementManager.MovementDirection _lastMovementDirection = MovementManager.MovementDirection.Down;
 
-    void Awake()
+    public void Awake()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
         _rigidBody.gravityScale = 0f;
         _rigidBody.constraints = RigidbodyConstraints2D.FreezeRotation;
-        _movementManager.SetPlayer(gameObject);
     }
 
-    void OnMove(InputValue value)
+    public void OnMove(InputValue value)
     {
         _moveInput = value.Get<Vector2>();
-        /*if (_moveInput != Vector2.zero)
+        _currentMovementType = _moveInput == Vector2.zero ? MovementManager.MovementType.Idle : MovementManager.MovementType.Run;
+        if( _moveInput.x > 0) _currentMovementDirection = MovementManager.MovementDirection.Right;
+        else if (_moveInput.x < 0) _currentMovementDirection = MovementManager.MovementDirection.Left;
+        else if (_moveInput.y > 0) _currentMovementDirection = MovementManager.MovementDirection.Up;
+        else if (_moveInput.y < 0) _currentMovementDirection = MovementManager.MovementDirection.Down;
+
+        if (_currentMovementType == _lastMovementType && _currentMovementDirection == _lastMovementDirection) return;
+
+        string startAnimation = _currentMovementType == MovementManager.MovementType.Run ? "run_" : "idle_";
+        switch (_currentMovementDirection)
         {
-            if (_moveInput.y > 0) _playerAnimator.Play("idle_back");
-            else if (_moveInput.y < 0) _playerAnimator.Play("idle_front");
-        }*/
+            case MovementManager.MovementDirection.Up: _playerAnimator.Play(startAnimation + "back"); break;
+            case MovementManager.MovementDirection.Down: _playerAnimator.Play(startAnimation + "front"); break;
+            case MovementManager.MovementDirection.Left: _playerAnimator.Play(startAnimation + "left"); break;
+            case MovementManager.MovementDirection.Right: _playerAnimator.Play(startAnimation + "right"); break;
+        }
+
+        _lastMovementDirection = _currentMovementDirection;
+        _lastMovementType = _currentMovementType;
     }
 
-    void FixedUpdate()
+    public void FixedUpdate()
     {
-        _rigidBody.linearVelocity = _moveInput * _playerDataManager.GetMoveSpeed();
+        int speed = CharacterManager.Instance.SelectedCharacter.GetTotalStats().Speed;
+        _rigidBody.linearVelocity = _moveInput * (float)(speed / 10f);
     }
 }

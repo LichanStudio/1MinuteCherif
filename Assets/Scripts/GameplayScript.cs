@@ -4,10 +4,6 @@ using UnityEngine.InputSystem;
 
 public class GameplayScript : MonoBehaviour
 {
-    [Header("Managers")]
-    [SerializeField] private GameManager _gameManager;
-    [SerializeField] private PlayerDataManager _playerDataManager;
-
     [Header("Settings")]
     [SerializeField] private GameObject _projectilePrefab;
     [SerializeField] private GameObject _EscUI;
@@ -32,14 +28,14 @@ public class GameplayScript : MonoBehaviour
     {
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            if (!_isEsc) _wasPaused = _gameManager.IsGamePaused();
+            if (!_isEsc) _wasPaused = GameManager.Instance.IsGamePaused();
             OnPressEsc();
         }
     }
 
     void OnClick(InputValue value)
     {
-        if (!value.isPressed || _playerDataManager == null) return;
+        if (!value.isPressed) return;
 
         StartCoroutine(SpawnProjectilesWithDelay());
     }
@@ -48,7 +44,7 @@ public class GameplayScript : MonoBehaviour
     {
         _isEsc = !_isEsc;
         if (_EscUI != null) _EscUI.SetActive(_isEsc);
-        if (!_wasPaused) _gameManager.TogglePause(_isEsc);
+        if (!_wasPaused) GameManager.Instance.TogglePause(_isEsc);
 
     }
 
@@ -70,23 +66,31 @@ public class GameplayScript : MonoBehaviour
 
     private IEnumerator SpawnProjectilesWithDelay()
     {
-        int count = _playerDataManager.GetProjectilesPerClick();
+        int count = 1;
 
-        for (int i = 0; i < count; i++)
+        if (CharacterManager.Instance != null && CharacterManager.Instance.SelectedCharacter != null && CharacterManager.Instance.SelectedCharacter.WeaponData != null)
         {
-            ActionsManager.OnShoot?.Invoke();
-            Vector2 mousePos = Mouse.current.position.ReadValue();
-            Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
-            worldPos.z = 0f;
-
-            Vector2 colliderCenter = GetCenter();
-
-            if (Instantiate(_projectilePrefab, colliderCenter, Quaternion.identity).TryGetComponent<ProjectileScript>(out var projectile))
+            for (int i = 0; i < count; i++)
             {
-                projectile.SetInitialDirection(worldPos, colliderCenter);
-            }
+                ActionsManager.OnShoot?.Invoke();
+                Vector2 mousePos = Mouse.current.position.ReadValue();
+                Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
+                worldPos.z = 0f;
 
-            yield return new WaitForSeconds(_SPAWN_DELAY / _playerDataManager.GetProjectilesPerClick());
+                Vector2 colliderCenter = GetCenter();
+                WeaponData weaponData = CharacterManager.Instance.SelectedCharacter.WeaponData;
+                GameObject newProjectile = weaponData.GetWeaponObject(colliderCenter);
+
+                if (weaponData != null && newProjectile != null && newProjectile.TryGetComponent<ProjectileScript>(out var projectile))
+                {
+                    projectile.SetInitialDirection(worldPos, colliderCenter);
+                    projectile.SetSpeed(weaponData.ProjectileSpeed);
+                    projectile.SetCasterData(CharacterManager.Instance.SelectedCharacter);
+                }
+
+                yield return new WaitForSeconds(_SPAWN_DELAY / count);
+            }
         }
+        yield return new WaitForSeconds(0.1f);
     }
 }
