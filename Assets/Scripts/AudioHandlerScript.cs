@@ -37,12 +37,12 @@ public class AudioHandlerScript : MonoBehaviour
         ActionsManager.OnSelectDefinitiveUpgrade -= OnBuyUpgrade;
     }
 
-    private void OnDamageEnemy(EntityData entity, int damage)
+    private void OnDamageEnemy(EnemyScript entity, int damage)
     {
         OnHit();
     }
 
-    private void OnDamagePlayer(int damage)
+    private void OnDamagePlayer(PlayerScript playerScript, int damage)
     {
         OnHit();
     }
@@ -59,7 +59,7 @@ public class AudioHandlerScript : MonoBehaviour
         AudioMng.PlayShootSound();
     }
 
-    private void OnBuyUpgrade(Upgrade upgrade)
+    private void OnBuyUpgrade(Stats stats)
     {
         if (AudioMng == null) return;
         AudioMng.PlayBuySound();

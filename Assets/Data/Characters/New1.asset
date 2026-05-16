@@ -18,17 +18,26 @@ MonoBehaviour:
   _weaponData: {fileID: 11400000, guid: aff11ae44774136409ccb27fb6598172, type: 2}
   _baseStats:
     MultishotChance: 0
+    MultihitChance: 0
+    BounceChance: 0
+    PiercingChance: 0
     Speed: 50
     HP: 5
     Damage: 10
   _additionnalStats:
     MultishotChance: 0
+    MultihitChance: 0
+    BounceChance: 0
+    PiercingChance: 0
     Speed: 0
     HP: 0
     Damage: 0
   _isUnlockedByDefault: 1
   _definitiveStats:
     MultishotChance: 0
+    MultihitChance: 0
+    BounceChance: 0
+    PiercingChance: 0
     Speed: 0
     HP: 0
     Damage: 0

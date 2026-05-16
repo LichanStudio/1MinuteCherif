@@ -30,14 +30,14 @@ public class SaloonScript : MonoBehaviour
         _movementManager.TeleportPlayer(_spawnPoint.transform.position);
         foreach(DefinitiveUpgradeScript defUpgrade in _definitiveUpgrades)
         {
-            Upgrade newDefUpgrade = _upgradesManager.GetRandomDefUpgrade();
+            /*Upgrade newDefUpgrade = _upgradesManager.GetRandomDefUpgrade();
             newDefUpgrade.GetUpgradeData().CalculateDefValue();
             defUpgrade.SetUpgrade(newDefUpgrade);
-            defUpgrade.gameObject.SetActive(true);
+            defUpgrade.gameObject.SetActive(true);*/
         }
     }
 
-    public void OnTryBuyUpgrade(Upgrade upgrade)
+    public void OnTryBuyUpgrade(Stats upgrade)
     {
         /*if (_gameManager.GetGolds() > upgrade.GetUpgradeData().DefinitiveCost)
         {

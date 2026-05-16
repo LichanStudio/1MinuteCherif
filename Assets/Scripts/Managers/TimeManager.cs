@@ -56,19 +56,24 @@ public class TimeManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(1f);
+
             _totalSeconds++;
             if (_isPlaying && !GameManager.Instance.IsGamePaused()) _secondsPlayed++;
             if (_isPickingUpgrade) _secondsPickUpgrade++;
             if (!GameManager.Instance.IsGamePaused()) ActionsManager.OnUpdateTime?.Invoke();
             else ActionsManager.OnUpdateRealTime?.Invoke();
-            if (GetSecondsLeft() <= 0)
+
+            if (!_isPickingUpgrade)
             {
-                ActionsManager.OnEndSession?.Invoke();
-                yield break;
-            }
-            if(GameManager.Instance.GetTimePlayed() > 5 && GetSecondsLeft() % 10 == 0)
-            {
-                ActionsManager.OnStartUpgradeSelection?.Invoke();
+                if (GetSecondsLeft() <= 0)
+                {
+                    ActionsManager.OnEndSession?.Invoke();
+                    yield break;
+                }
+                if (_secondsPlayed > 1 && GetSecondsLeft() % 10 == 0)
+                {
+                    ActionsManager.OnStartUpgradeSelection?.Invoke();
+                }
             }
         }
     }
@@ -78,7 +83,7 @@ public class TimeManager : MonoBehaviour
         _isPickingUpgrade = true;
     }
 
-    private void OnSelectUpgrade(CalculatedUpgradeClass upgrade, CalculatedUpgradeClass previousUpgrade)
+    private void OnSelectUpgrade(Stats upgrade, Stats previousUpgrade)
     {
         _isPickingUpgrade = false;
     }

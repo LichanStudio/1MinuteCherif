@@ -32,6 +32,7 @@ public class WeaponData : ScriptableObject
     [SerializeField] private bool _enableMultiHit;
     [SerializeField] private int _baseMultiHit = 0;
     [SerializeField] private ProjectileType _projectileType;
+    [SerializeField] private float _baseAttackSpeed = 0.7f;
     [SerializeField] private int _projectileSpeed = 50;
     [SerializeField] private Weapon[] _weapons;
     [SerializeField] private GameObject _weaponPrefab;
@@ -40,6 +41,7 @@ public class WeaponData : ScriptableObject
     public string Name => _name;
 
     public int ProjectileSpeed => _projectileSpeed;
+    public float BaseAttackSpeed => _baseAttackSpeed;
 
     public Weapon GetWeapon(int tier = 0)
     {
@@ -74,5 +76,25 @@ public class WeaponData : ScriptableObject
     {
         if (!_enableMultiHit) return 0;
         return _baseMultiHit;
+    }
+
+    public bool IsPiercingEnabled()
+    {
+        return _enablePiercing;
+    }
+
+    public bool IsMultiShotEnabled()
+    {
+        return _enableMultiShot;
+    }
+
+    public bool IsMultiHitEnabled()
+    {
+        return _enableMultiHit;
+    }
+
+    public bool IsBouncingEnabled()
+    {
+        return _enableBouncing;
     }
 }

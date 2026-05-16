@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: CharactersRegistry
   m_EditorClassIdentifier: Assembly-CSharp::CharactersRegistry
   characters:
+  - {fileID: 11400000, guid: 18d48401cc0aca74f8ce49c1e6ce3907, type: 2}
   - {fileID: 11400000, guid: 10fa5e4169109d34b85f2d2cffb766e9, type: 2}
   - {fileID: 11400000, guid: 12087c1df83e43b4c8aa02227132fe96, type: 2}

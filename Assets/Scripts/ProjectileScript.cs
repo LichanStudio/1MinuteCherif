@@ -16,13 +16,18 @@ public class ProjectileScript : MonoBehaviour
     private Dictionary<GameObject, Collider2D> _hittedTargets = new();
     private float _speed = 10.0f;
     private int _currentBounces = 0;
-    private int _currentPierce = 0;
+    private int _currentPierces = 0;
+    private int _maxPierces = 0;
+    private int _maxBounces = 0;
+    private int _countMultihits = 1;
+    private int _damage = 0;
     private EntityData _casterData;
 
     void Awake()
     {
         _hittedTargets.Clear();
         _rigidBody = GetComponent<Rigidbody2D>();
+        ResetData();
     }
 
     void Start()
@@ -41,6 +46,15 @@ public class ProjectileScript : MonoBehaviour
         _speed = (float)speed / 10f;
     }
 
+    public void ResetData()
+    {
+        _currentBounces = 0;
+        _currentPierces = 0;
+        _maxPierces = 0;
+        _maxBounces = 0;
+        _countMultihits = 1;
+    }
+
     private void OnTriggerEnter2D(Collider2D collider)
     {
         if (collider != null && !collider.IsDestroyed() && collider.gameObject != null && collider.isTrigger && collider.CompareTag("Enemy"))
@@ -49,21 +63,13 @@ public class ProjectileScript : MonoBehaviour
 
             _hittedTargets.Add(collider.gameObject, collider);
 
-            int damage = 1;
-            int maxBounces = 0;
-            int maxPierces = 0;
-
-            if (_casterData != null) damage = _casterData.GetTotalStats().Damage;
-            if (_casterData.WeaponData != null)
-            {
-                damage += _casterData.WeaponData.GetWeapon().AdditionalDamage;
-                maxBounces = _casterData.WeaponData.GetMaxBounces();
-                maxPierces = _casterData.WeaponData.GetMaxPiercing();
-            }
-
             if (collider.gameObject.TryGetComponent(out EnemyScript enemy))
             {
-                enemy.TakeDamage(damage);
+                if (enemy.IsDying()) return;
+                for (int i = 0; i < _countMultihits; i++)
+                {
+                    DamageManager.Instance.OnDamageEnemy(enemy, _damage);
+                }
             }
 
             /*if (!_isMagic && _playerDataManager.GetChanceOfMulti() > Random.Range(0, 100))
@@ -89,14 +95,15 @@ public class ProjectileScript : MonoBehaviour
             {
                 RedirectToNearestEnemy();
             }*/
-            if (_currentBounces < maxBounces)
+
+            if (_currentBounces < _maxBounces)
             {
                 _currentBounces++;
                 RedirectToNearestEnemy();
             }
-            else if (_currentPierce < maxPierces)
+            else if (_currentPierces < _maxPierces)
             {
-                _currentPierce++;
+                _currentPierces++;
             }
             else
             {
@@ -108,6 +115,21 @@ public class ProjectileScript : MonoBehaviour
     public void SetCasterData(EntityData casterData)
     {
         _casterData = casterData;
+        if (_casterData != null)
+        {
+            _damage += _casterData.GetTotalStats().Damage;
+            _maxBounces += GameManager.Instance.GetProcs(_casterData.GetTotalStats().BounceChance);
+            _maxPierces += GameManager.Instance.GetProcs(_casterData.GetTotalStats().PiercingChance);
+            _countMultihits += GameManager.Instance.GetProcs(_casterData.GetTotalStats().MultihitChance);
+        }
+        if (_casterData.WeaponData != null)
+        {
+            _damage += _casterData.WeaponData.GetWeapon().AdditionalDamage;
+            _maxBounces += _casterData.WeaponData.GetMaxBounces();
+            _maxPierces += _casterData.WeaponData.GetMaxPiercing();
+            _countMultihits += _casterData.WeaponData.GetMaxMultiHit();
+
+        }
     }
 
     public void SetHittedTargets(Dictionary<GameObject, Collider2D> hittedTargets)
@@ -120,16 +142,17 @@ public class ProjectileScript : MonoBehaviour
         GoTo(direction);
     }
 
-    public void SetInitialDirection(Vector2 target, Vector2 from)
+    public void SetInitialDirection(Vector2 target, Vector2 from, float additionnalAngle = 0f)
     {
         Vector2 direction = (target - from).normalized;
-        GoTo(direction);
+        GoTo(direction, additionnalAngle);
     }
 
-    public void GoTo(Vector2 direction)
+    public void GoTo(Vector2 direction, float additionnalAngle = 0f)
     {
         _rigidBody.linearVelocity = direction.normalized * _speed;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        angle += additionnalAngle;
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 

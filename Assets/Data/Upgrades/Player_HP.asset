@@ -13,11 +13,25 @@ MonoBehaviour:
   m_Name: Player_HP
   m_EditorClassIdentifier: Assembly-CSharp::Upgrade
   _id: player-hp
-  _upgradeData:
-    _isEnemyUpgrade: 0
-    _definitiveMax: 10
-    _definitiveMin: 5
-    _definitiveCost: 250
-    _sessionMin: 10
-    _sessionMax: 50
-    _upgradeType: 6
+  _isEnemyUpgrade: 0
+  _minStats:
+    MultishotChance: 0
+    Speed: 0
+    HP: 10
+    Damage: 0
+  _maxStats:
+    MultishotChance: 0
+    Speed: 0
+    HP: 15
+    Damage: 0
+  _minDefinitiveStats:
+    MultishotChance: 0
+    Speed: 0
+    HP: 0
+    Damage: 0
+  _maxDefinitiveStats:
+    MultishotChance: 0
+    Speed: 0
+    HP: 0
+    Damage: 0
+  _upgradeType: 0

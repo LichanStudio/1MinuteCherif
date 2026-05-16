@@ -1,6 +1,8 @@
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [CreateAssetMenu(fileName = "CharactersRegistry", menuName = "ScriptableObjects/Registries/Characters")]
 public class CharactersRegistry : ScriptableObject
@@ -9,6 +11,7 @@ public class CharactersRegistry : ScriptableObject
 
     public void RefreshInEditor()
     {
+#if UNITY_EDITOR
         characters.Clear();
 
         string searchFilter = "t:CharacterData";
@@ -24,5 +27,6 @@ public class CharactersRegistry : ScriptableObject
         Debug.Log($"Characters data added : {characters.Count}");
         UnityEditor.EditorUtility.SetDirty(this);
         AssetDatabase.SaveAssets();
+#endif
     }
 }

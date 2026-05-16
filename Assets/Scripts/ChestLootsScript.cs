@@ -5,10 +5,6 @@ using UnityEngine;
 
 public class ChestLootsScript : MonoBehaviour
 {
-    [Header("Managers")]
-    [SerializeField] private GameManager _gameManager;
-    [SerializeField] private UpgradesManager _upgradesManager;
-
     [Header("Upgrade Effectiveness Settings")]
     [SerializeField] private float _effectivenessDescreaseSpeed = 0.025f;
     [SerializeField] private float _maxEffectiveness = 1f;
@@ -61,14 +57,14 @@ public class ChestLootsScript : MonoBehaviour
 
     public void GenerateLoots(bool goingWrong = false)
     {
-        _gameManager.TogglePause(true);
+        GameManager.Instance.TogglePause(true);
         gameObject.SetActive(true);
         if (goingWrong) _goingWrongPercent = 0.3f;
         _everythingGoingWrong = goingWrong;
         _everythingLabel.gameObject.SetActive(goingWrong);
         for (int i = 0; i < _upgradesUI.Count; i++)
         {
-            _upgradesUI[i].SetUpgrades(_upgradesManager.GenerateLoots(goingWrong), _maxEffectiveness, _goingWrongPercent);
+            _upgradesUI[i].SetUpgrades(UpgradesManager.Instance.GetTemporaryUpgrades(false), UpgradesManager.Instance.GetTemporaryUpgrades(true), _maxEffectiveness, _goingWrongPercent);
         }
     }
 
@@ -80,10 +76,10 @@ public class ChestLootsScript : MonoBehaviour
         }
     }
 
-    public void OnSelectUpgrade(CalculatedUpgradeClass playerUpgrade, CalculatedUpgradeClass enemyUpgrade)
+    public void OnSelectUpgrade(Stats playerUpgrade, Stats enemyUpgrade)
     {
         gameObject.SetActive(false);
-        _gameManager.TogglePause(false);
+        GameManager.Instance.TogglePause(false);
     }
 
     private IEnumerator DelayClickGoingWrong()

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1246219efd52fce4ea1986cfc8a36d44, type: 3}
+  m_Name: TileTexturesRegistry
+  m_EditorClassIdentifier: Assembly-CSharp::TileTexturesRegistry
+  Textures:
+  - {fileID: 11400000, guid: 18a269f0d202d784795320f527e89fd9, type: 2}
+  - {fileID: 11400000, guid: c409924d9cf01d04a9d99f0e82b56367, type: 2}
+  - {fileID: 11400000, guid: 3e861fc118082704a90858d9a773a226, type: 2}
+  - {fileID: 11400000, guid: bb0271bf131232e42983f90aaed20d33, type: 2}

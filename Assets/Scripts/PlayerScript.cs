@@ -14,14 +14,12 @@ public class PlayerScript : MonoBehaviour
     public void OnEnable()
     {
         if(_HPStatusBar != null) _HPStatusBar.AutoMask = false;
-        ActionsManager.OnDamagePlayer += HandleDamage;
-        ActionsManager.OnDamageEnemy += HandleEnemyDamage;
+        ActionsManager.OnDamageEnemy += OnDamageEnemy;
     }
 
     public void OnDisable()
     {
-        ActionsManager.OnDamagePlayer -= HandleDamage;
-        ActionsManager.OnDamageEnemy -= HandleEnemyDamage;
+        ActionsManager.OnDamageEnemy -= OnDamageEnemy;
     }
 
     public void Update()
@@ -35,8 +33,9 @@ public class PlayerScript : MonoBehaviour
         }*/
     }
 
-    public void HandleDamage(int damage)
+    public void TakeDamage(int damage)
     {
+        _damageTaken += damage;
         /*_damageTaken += damage;
         _damageTaken = Mathf.Clamp(_damageTaken, 0, _playerDataManager.GetHPMax());
         UpdateStatus();
@@ -44,9 +43,10 @@ public class PlayerScript : MonoBehaviour
         {
             ActionsManager.OnPlayerKilled?.Invoke();
         }*/
+        ActionsManager.OnDamagePlayer?.Invoke(this, damage);
     }
 
-    public void HandleEnemyDamage(MonsterData enemy, int damage)
+    public void OnDamageEnemy(EnemyScript enemyScript, int damage)
     {
         /*if (_playerDataManager.GetLifeSteal() > 0)
         {

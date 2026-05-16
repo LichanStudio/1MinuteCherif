@@ -1,6 +1,8 @@
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [CreateAssetMenu(fileName = "MonstersRegistry", menuName = "ScriptableObjects/Registries/Monsters")]
 public class MonstersRegistry : ScriptableObject
@@ -9,6 +11,7 @@ public class MonstersRegistry : ScriptableObject
 
     public void RefreshInEditor()
     {
+#if UNITY_EDITOR
         entities.Clear();
 
         string searchFilter = "t:MonsterData";
@@ -24,10 +27,12 @@ public class MonstersRegistry : ScriptableObject
         Debug.Log($"Total de monstres ajoutés : {entities.Count}");
         UnityEditor.EditorUtility.SetDirty(this);
         AssetDatabase.SaveAssets();
+#endif
     }
 
     public MonsterData GetRandomMonster()
     {
+        //List<MapData.MonsterSpawnData> spawnData = MapsManager.Instance.GetMonstersProbs();
         if (entities.Count == 0) return null;
         int randomIndex = Random.Range(0, entities.Count);
         return entities[randomIndex];

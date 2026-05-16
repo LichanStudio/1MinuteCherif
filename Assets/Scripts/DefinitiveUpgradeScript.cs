@@ -7,7 +7,6 @@ public class DefinitiveUpgradeScript : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _costValue;
 
     private bool _isIn = false;
-    private Upgrade _upgrade = null;
 
     public void OnEnable()
     {
@@ -28,7 +27,7 @@ public class DefinitiveUpgradeScript : MonoBehaviour
         }
         if (_isIn && collision.isTrigger && collision.gameObject.CompareTag("Projectiles"))
         {
-            ActionsManager.OnTryBuyUpgrade?.Invoke(_upgrade);
+            //ActionsManager.OnTryBuyUpgrade?.Invoke(_upgrade);
         }
     }
 
@@ -41,9 +40,9 @@ public class DefinitiveUpgradeScript : MonoBehaviour
         }
     }
 
-    public void SetUpgrade(Upgrade upgrade)
+    public void SetUpgrade(UpgradeData upgrade)
     {
-        string label = "";
+        /*string label = "";
         string unit = "";
         _upgrade = upgrade;
         switch (upgrade.GetUpgradeData().UpgradeType)
@@ -59,6 +58,6 @@ public class DefinitiveUpgradeScript : MonoBehaviour
             case Upgrade.UpgradeType.MoveSpeed:label = "Move speed"; unit = "%"; break;
         }
         _upgradeLine.SetUpgradeLine(label, upgrade.GetUpgradeData().GetDefValue().ToString() + unit);
-        _costValue.text = upgrade.GetUpgradeData().DefinitiveCost.ToString();
+        _costValue.text = upgrade.GetUpgradeData().DefinitiveCost.ToString();*/
     }
 }

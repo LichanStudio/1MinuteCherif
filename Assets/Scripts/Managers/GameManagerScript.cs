@@ -8,14 +8,12 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [Header("Settings")]
+    [SerializeField] private int _pixel_per_unit = 16;
     [SerializeField] private GameData _gameData;
 
     private int _countSeconds = 0;
     private int _countKills = 0;
     private bool _isGamePaused = false;
-
-    private List<Upgrade> _sessionUpgrades = new();
-    private Dictionary<string, Upgrade>_definitivesUpgrades = new();
 
     private void Awake()
     {
@@ -30,13 +28,15 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        ActionsManager.OnStartSession?.Invoke();
+
     }
 
     public void ResetSessionUgrades()
     {
-        _sessionUpgrades.Clear();
+
     }
+
+    public int PIXELS_PER_UNIT => _pixel_per_unit;
 
     public void AddKilledEnemy() => _countKills++;
     
@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void OnBuyDefinitiveUpgrade(Upgrade upgrade)
+    public void OnBuyDefinitiveUpgrade(Stats upgrade)
     {
         /*if (_golds > upgrade.GetUpgradeData().DefinitiveCost)
         {
@@ -90,5 +90,16 @@ public class GameManager : MonoBehaviour
             else _definitivesUpgrades.Add(upgrade.GetId(), upgrade);
             ActionsManager.OnSelectDefinitiveUpgrade?.Invoke(upgrade);
         }*/
+    }
+
+    public int GetProcs(int procChance)
+    {
+        int procs = 0;
+        while (UnityEngine.Random.Range(0, 100) < procChance)
+        {
+            procs++;
+            procChance -= 100;
+        }
+        return procs;
     }
 }

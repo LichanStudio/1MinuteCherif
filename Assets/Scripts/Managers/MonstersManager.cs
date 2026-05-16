@@ -9,6 +9,8 @@ public class MonstersManager : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private MonstersRegistry _monsterRegistry;
     [SerializeField] private float _spawnRange = 10f;
+    [SerializeField] private float _spwnMultiplier = 30f;
+    [SerializeField] private float _rateMultiplier = 1f;
     [SerializeField] private AnimationCurve _spawnQuantityCurve;
     [SerializeField] private AnimationCurve _spawnRateCurve;
 
@@ -84,8 +86,8 @@ public class MonstersManager : MonoBehaviour
     {
         while (_spawnMonsters)
         {
-            float quantity = _spawnQuantityCurve.Evaluate(GameManager.Instance.GetTimePlayed() / GameManager.Instance.GetSessionDuration());
-            float speed = _spawnRateCurve.Evaluate(1f - (GameManager.Instance.GetTimePlayed() / GameManager.Instance.GetSessionDuration()));
+            float quantity = _spawnQuantityCurve.Evaluate(GameManager.Instance.GetTimePlayed() / GameManager.Instance.GetSessionDuration()) * _spwnMultiplier;
+            float speed = _spawnRateCurve.Evaluate(1f - (GameManager.Instance.GetTimePlayed() / GameManager.Instance.GetSessionDuration())) / _rateMultiplier;
             if (quantity < 1f) quantity = 1f;
             for (int i = 0; i < quantity; i++)
             {

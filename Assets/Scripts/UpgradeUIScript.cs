@@ -13,10 +13,11 @@ public class UpgradeUIScript : MonoBehaviour, IPointerClickHandler
     [SerializeField] private GameObject _playerUpgradesParent;
     [SerializeField] private GameObject _enemyUpgradesParent;
 
-    private CalculatedUpgradeClass _playerUpgrades;
-    private CalculatedUpgradeClass _enemyUpgrades;
+    private Stats _characterUpgrades;
+    private Stats _enemiesUpgrades;
+    private Stats _characterCalculatedUpgrades;
+    private Stats _enemiesCalculatedUpgrades;
     private bool _canClick = false;
-    private List<Upgrade> _upgrades;
 
     public void OnEnable()
     {
@@ -24,39 +25,37 @@ public class UpgradeUIScript : MonoBehaviour, IPointerClickHandler
         StartCoroutine(DelayClickEvent());
     }
 
-    public void SetUpgrades(List<Upgrade> upgrades, float playerEff, float enemyEff)
+    public void SetUpgrades(Stats charactersUpgrades, Stats enemiesUpgrades, float playerEff, float enemyEff)
     {
-        _upgrades = upgrades;
+        Debug.Log("Setting up upgrades with player efficiency: " + playerEff + " and enemy efficiency: " + enemyEff);
+        _characterUpgrades = charactersUpgrades;
+        _enemiesUpgrades = enemiesUpgrades;
         UpdateUI(playerEff, enemyEff);
     }
 
     public void UpdateUI(float playerEff, float enemyEff)
     {
-        _playerUpgrades = new();
-        _enemyUpgrades = new();
-        _playerUpgrades.CalculateUpgrade(_upgrades.Where(u => u.GetUpgradeData().IsEnemyUpgrade == false).ToList(), playerEff);
-        _enemyUpgrades.CalculateUpgrade(_upgrades.Where(u => u.GetUpgradeData().IsEnemyUpgrade == true).ToList(), enemyEff);
-        AddLines(_playerUpgrades, _playerUpgradesParent);
-        AddLines(_enemyUpgrades, _enemyUpgradesParent);
+        _characterCalculatedUpgrades = _characterUpgrades;
+        _enemiesCalculatedUpgrades = _enemiesUpgrades;
+        AddLines(_characterCalculatedUpgrades, _playerUpgradesParent);
+        AddLines(_enemiesCalculatedUpgrades, _enemyUpgradesParent);
     }
 
-    private void AddLines(CalculatedUpgradeClass calculUp, GameObject parentContainer)
+    private void AddLines(Stats stats, GameObject parentContainer)
     {
-        if (calculUp != null && parentContainer != null)
+        if (stats != null && parentContainer != null)
         {
             for (int i = 0; i < parentContainer.transform.childCount; i++)
             {
                 Destroy(parentContainer.transform.GetChild(i).gameObject);
             }
-            if (calculUp.DamageAdd != 0) AddLine(parentContainer, "Damage", calculUp.DamageAdd.ToString());
-            if (calculUp.BulletsAdd != 0) AddLine(parentContainer, "Bullets", calculUp.BulletsAdd.ToString());
-            if (calculUp.BouncesAdd != 0) AddLine(parentContainer, "Bounce", calculUp.BouncesAdd.ToString());
-            if (calculUp.MultiCount != 0) AddLine(parentContainer, "Split bullets", calculUp.MultiCount.ToString());
-            if (calculUp.MultiChance != 0) AddLine(parentContainer, "Chance of split", calculUp.MultiChance.ToString() + "%");
-            if (calculUp.HPAdd != 0) AddLine(parentContainer, "Increase HP", calculUp.HPAdd.ToString());
-            if (calculUp.HPRecovery != 0) AddLine(parentContainer, "HP Recovery", calculUp.HPAdd.ToString() + "%");
-            if (calculUp.LifeSteal != 0) AddLine(parentContainer, "Life steal", calculUp.LifeSteal.ToString() + "%");
-            if (calculUp.MoveSpeed != 0) AddLine(parentContainer, "Move speed", calculUp.MoveSpeed.ToString() + "%");
+            if (stats.Damage != 0) AddLine(parentContainer, "Damage", stats.Damage.ToString() + "%");
+            if (stats.MultishotChance != 0) AddLine(parentContainer, "Multishot chance", stats.MultishotChance.ToString() + "%");
+            if (stats.MultihitChance != 0) AddLine(parentContainer, "Multihit chance", stats.MultihitChance.ToString() + "%");
+            if (stats.BounceChance != 0) AddLine(parentContainer, "Bounce chance", stats.BounceChance.ToString() + "%");
+            if (stats.PiercingChance != 0) AddLine(parentContainer, "Piercing chance", stats.PiercingChance.ToString() + "%");
+            if (stats.Speed != 0) AddLine(parentContainer, "Move speed", stats.Speed.ToString());
+            if (stats.HP != 0) AddLine(parentContainer, "HP", stats.HP.ToString() + "%");
         }
     }
 
@@ -73,7 +72,7 @@ public class UpgradeUIScript : MonoBehaviour, IPointerClickHandler
     {
         if (_canClick && eventData.button == PointerEventData.InputButton.Left)
         {
-            ActionsManager.OnSelectUpgrade?.Invoke(_playerUpgrades, _enemyUpgrades);
+            ActionsManager.OnSelectUpgrade?.Invoke(_characterCalculatedUpgrades, _enemiesCalculatedUpgrades);
         }
     }
 

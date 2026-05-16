@@ -24,6 +24,14 @@ public class CharacterManager : MonoBehaviour
         SelectedCharacter = GetUnlockedCharacters().FirstOrDefault();
         SelectCharacter(SelectedCharacter);
         ActionsManager.OnSpawnCharacter?.Invoke();
+        ActionsManager.OnSelectUpgrade += OnSelectUpgrade;
+        ActionsManager.OnStartSession += OnStartSession;
+    }
+
+    public void OnDisable()
+    {
+        ActionsManager.OnSelectUpgrade -= OnSelectUpgrade;
+        ActionsManager.OnStartSession -= OnStartSession;
     }
 
     public List<CharacterData> GetUnlockedCharacters()
@@ -33,5 +41,15 @@ public class CharacterManager : MonoBehaviour
     {
         SelectedCharacter = character;
         ActionsManager.OnSelectCharacter?.Invoke(character);
+    }
+
+    public void OnStartSession()
+    {
+        SelectedCharacter.ResetAditionnalStats();
+    }
+
+    public void OnSelectUpgrade(Stats characterStats, Stats enemiesStats)
+    {
+        SelectedCharacter.AddAditionnalStats(characterStats);
     }
 }

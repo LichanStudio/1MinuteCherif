@@ -36,7 +36,7 @@ public class GoldsScript : MonoBehaviour
         UpdateGolds();
     }
 
-    public void OnSelectDefinitiveUpgrade(Upgrade upgrade)
+    public void OnSelectDefinitiveUpgrade(Stats upgrade)
     {
         UpdateGolds();
     }

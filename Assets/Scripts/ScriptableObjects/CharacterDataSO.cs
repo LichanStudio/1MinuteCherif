@@ -9,10 +9,10 @@ public class CharacterData : EntityData
     [Header("Stats")]
     [SerializeField] private Stats _definitiveStats;
 
-    public CharacterData()
-    {
-        _statsList = new Stats[] { _baseStats, _definitiveStats, _additionnalStats };
-    }
-
     public bool IsUnlockedByDefault => _isUnlockedByDefault;
+
+    protected new Stats[] GetStatsList()
+    {
+        return _statsList = new Stats[] { _baseStats, _definitiveStats, _additionnalStats };
+    }
 }

@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonstersRegistry
   entities:
   - {fileID: 11400000, guid: 1a7c84d36004b4141b18db8413cd1e07, type: 2}
+  - {fileID: 11400000, guid: 6f755ff3405a4de498096f59132cd94b, type: 2}
+  - {fileID: 11400000, guid: 78171d3116dd5b04ab05f795dc2673c6, type: 2}

@@ -13,11 +13,37 @@ MonoBehaviour:
   m_Name: Player_MoveSpeed
   m_EditorClassIdentifier: Assembly-CSharp::Upgrade
   _id: move-speed
-  _upgradeData:
-    _isEnemyUpgrade: 0
-    _definitiveMax: 10
-    _definitiveMin: 5
-    _definitiveCost: 500
-    _sessionMin: 10
-    _sessionMax: 30
-    _upgradeType: 3
+  _isEnemyUpgrade: 0
+  _minStats:
+    MultishotChance: 0
+    MultihitChance: 0
+    BounceChance: 0
+    PiercingChance: 0
+    Speed: 2
+    HP: 0
+    Damage: 0
+  _maxStats:
+    MultishotChance: 0
+    MultihitChance: 0
+    BounceChance: 0
+    PiercingChance: 0
+    Speed: 5
+    HP: 0
+    Damage: 0
+  _minDefinitiveStats:
+    MultishotChance: 0
+    MultihitChance: 0
+    BounceChance: 0
+    PiercingChance: 0
+    Speed: 0
+    HP: 0
+    Damage: 0
+  _maxDefinitiveStats:
+    MultishotChance: 0
+    MultihitChance: 0
+    BounceChance: 0
+    PiercingChance: 0
+    Speed: 0
+    HP: 0
+    Damage: 0
+  _upgradeType: 0

@@ -17,14 +17,9 @@ public abstract class EntityData : ScriptableObject
     };
     [SerializeField] protected Stats _additionnalStats = new();
 
-    private int _damageTaken = 0;
+    private bool _statsCalculated = false;
     protected Stats _calculatedStats;
     protected Stats[] _statsList;
-
-    public EntityData()
-    {
-        _statsList = new Stats[] { _baseStats, _additionnalStats };
-    }
 
     public string ID => _ID;
     public string Name => _name;
@@ -33,20 +28,36 @@ public abstract class EntityData : ScriptableObject
     public RuntimeAnimatorController Animator => _animator;
     public WeaponData WeaponData => _weaponData;
 
-    public void TakeDamage(int damage)
+    public void AddAditionnalStats(Stats stats)
     {
-        _damageTaken += damage;
+        if (stats == null) return;
+        if (_additionnalStats == null) _additionnalStats = stats;
+        else _additionnalStats += stats;
+        _statsCalculated = false;
+    }
+
+    public void ResetAditionnalStats()
+    {
+        _additionnalStats = new();
+        _statsCalculated = false;
+    }
+
+    protected Stats[] GetStatsList()
+    {
+        return new Stats[] { _baseStats, _additionnalStats };
     }
 
     public Stats GetTotalStats(bool calculate = true)
     {
-        if (calculate || _calculatedStats == null)
+        if (!_statsCalculated || calculate || _calculatedStats == null)
         {
+            Stats[] _statsList = GetStatsList();
             for (int i = 0; i < _statsList.Length; i++)
             {
                 if (i == 0) _calculatedStats = _statsList[i];
                 else _calculatedStats += _statsList[i];
             }
+            _statsCalculated = true;
         }
         return _calculatedStats;
     }

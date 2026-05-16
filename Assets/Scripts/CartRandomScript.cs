@@ -16,7 +16,6 @@ public class CartRandomScript : MonoBehaviour
         {
             if (_doorToLock != null) _doorToLock.enabled = true;
             ActionsManager.OnSpawnCart?.Invoke(false);
-            ActionsManager.OnDamagePlayer?.Invoke(-9999);
             StartCoroutine(WaitAndLockDoor());
         }
     }
