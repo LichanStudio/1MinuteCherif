@@ -1,5 +1,7 @@
+using NUnit.Framework.Internal;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -13,6 +15,7 @@ public class Chunk : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     private static Dictionary<Vector2Int, Texture2D> textureCache = new();
+    private GameObject _colliderParent;
 
     void Awake()
     {
@@ -20,41 +23,13 @@ public class Chunk : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    //public IEnumerator GeneratePixels()
-    //{
-    //    int chunkSize = ChunkManager.Instance.chunkPixelSize;
-    //    Color[] pixels = generator.GeneratePixels(chunkX, chunkY);
-
-    //    Vector2Int key = new Vector2Int(chunkX, chunkY);
-
-    //    if (!textureCache.TryGetValue(key, out Texture2D tex))
-    //    {
-    //        tex = new Texture2D(chunkSize, chunkSize, TextureFormat.RGBA32, false)
-    //        {
-    //            filterMode = FilterMode.Point,
-    //            wrapMode = TextureWrapMode.Clamp
-    //        };
-    //        textureCache[key] = tex;
-    //    }
-
-    //    tex.SetPixels(pixels);
-    //    tex.Apply();
-    //    spriteRenderer.sprite = generator.TextureToSprite(tex);
-    //    yield return null;
-    //}
-
-    public IEnumerator GeneratePixels()
+    public void GeneratePixels(int chunkSize)
     {
-        int chunkSize = ChunkManager.Instance.chunkPixelSize;
-
-        // 1. On récupère maintenant un Color32[] (beaucoup plus léger)
-        Color32[] pixels = generator.GeneratePixels(chunkX, chunkY);
-
-        Vector2Int key = new Vector2Int(chunkX, chunkY);
+        var (pixels, pixelGrid) = generator.GeneratePixels(chunkX, chunkY);
+        Vector2Int key = new(chunkX, chunkY);
 
         if (!textureCache.TryGetValue(key, out Texture2D tex))
         {
-            // On garde RGBA32 car c'est le format natif pour Color32
             tex = new Texture2D(chunkSize, chunkSize, TextureFormat.RGBA32, false)
             {
                 filterMode = FilterMode.Point,
@@ -63,15 +38,42 @@ public class Chunk : MonoBehaviour
             textureCache[key] = tex;
         }
 
-        // 2. Utilise SetPixels32 au lieu de SetPixels
-        // C'est un transfert direct de mémoire, presque instantané.
         tex.SetPixels32(pixels);
-
-        // 3. Appliquer les changements au GPU
         tex.Apply();
 
         spriteRenderer.sprite = generator.TextureToSprite(tex);
 
-        yield return null;
+        PolygonCollider2D poly = null;
+        if (_colliderParent == null)
+        {
+            _colliderParent = new($"Collider_{chunkX}_{chunkY}");
+            _colliderParent.transform.SetParent(transform);
+            _colliderParent.transform.localPosition = Vector3.zero;
+        }
+        else
+        {
+            poly = _colliderParent.GetComponent<PolygonCollider2D>();
+        }
+        if (poly == null) poly = _colliderParent.AddComponent<PolygonCollider2D>();
+            
+        float pixelSize = 1f / GameManager.Instance.PIXELS_PER_UNIT;
+
+        ContourColliderBuilder.BuildWaterContours(
+            pixelGrid,
+            chunkSize,
+            (int)TileType.Water,
+            pixelSize,
+            poly
+        );
+        ContourColliderBuilder.BuildWaterContours(
+            pixelGrid,
+            chunkSize,
+            (int)TileType.Stone,
+            pixelSize,
+            poly
+        );
+        // TODO : gérer plusieurs poly pour les différents types
+        // Essayer de tout regrouper dans la même boucle ?
+        pixelGrid.Dispose();
     }
 }

@@ -1,5 +1,5 @@
 using System.Collections;
-using System.Threading;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MonstersManager : MonoBehaviour
@@ -15,12 +15,15 @@ public class MonstersManager : MonoBehaviour
     [SerializeField] private AnimationCurve _spawnRateCurve;
 
     private bool _spawnMonsters = false;
+    private float _totalMonstersProb = 0f;
+    private List<MapData.MonsterSpawnData> _monstersProbs = null;
     private Coroutine _coroutine;
 
     private void Awake()
     {
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
+        _totalMonstersProb = 0f;
     }
 
     public void OnEnable()
@@ -28,6 +31,7 @@ public class MonstersManager : MonoBehaviour
         ActionsManager.OnPlayerKilled += OnPlayerKilled;
         ActionsManager.OnStartSession += OnStartSession;
         ActionsManager.OnEndSession += OnEndSession;
+        ActionsManager.OnUpdateTime += OnUpdateTime;
     }
 
     public void OnDisable()
@@ -35,6 +39,7 @@ public class MonstersManager : MonoBehaviour
         ActionsManager.OnPlayerKilled -= OnPlayerKilled;
         ActionsManager.OnStartSession -= OnStartSession;
         ActionsManager.OnEndSession -= OnEndSession;
+        ActionsManager.OnUpdateTime -= OnUpdateTime;
     }
 
     private void OnStartSession()
@@ -65,7 +70,7 @@ public class MonstersManager : MonoBehaviour
 
     private void SpawnMonster()
     {
-        MonsterData monsterData = _monsterRegistry.GetRandomMonster();
+        MonsterData monsterData = _monsterRegistry.GetRandomMonster(_monstersProbs, _totalMonstersProb);
         if (monsterData == null) return;
         Vector2 spawnPosition = new(GetRandomSpread(), GetRandomSpread());
         if (PlayerManager.Instance != null && PlayerManager.Instance.PlayerObject != null) spawnPosition += (Vector2)PlayerManager.Instance.PlayerObject.transform.position;
@@ -94,6 +99,18 @@ public class MonstersManager : MonoBehaviour
                 SpawnMonster();
             }
             yield return new WaitForSeconds(speed);
+        }
+    }
+
+    private void OnUpdateTime(int timePassed, int totalTime)
+    {
+        float evaluate = 0.0f;
+        if (timePassed > 0) evaluate = timePassed / (float)totalTime;
+        _monstersProbs = MapsManager.Instance.GetMonstersProbs();
+        _totalMonstersProb = 0f;
+        foreach (MapData.MonsterSpawnData data in _monstersProbs)
+        {
+            _totalMonstersProb += data.GetActualSpawnChance(evaluate);
         }
     }
 }

@@ -10,6 +10,13 @@ public class MapData : ScriptableObject
     {
         public MonsterData Monster;
         public AnimationCurve SpawnChanceCurve;
+
+        private float _spwanChance = -1.0f;
+        public float GetActualSpawnChance(float evaluate = -1)
+        {
+            if (evaluate != -1) _spwanChance = SpawnChanceCurve.Evaluate(evaluate);
+            return _spwanChance;
+        }
     }
 
     [Header("Informations")]

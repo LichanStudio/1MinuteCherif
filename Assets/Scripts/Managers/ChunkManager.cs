@@ -111,7 +111,7 @@ public class ChunkManager : MonoBehaviour
             chunk.chunkX = coord.x;
             chunk.chunkY = coord.y;
             _loadedChunks[coord] = chunk;
-            StartCoroutine(chunk.GeneratePixels());
+            chunk.GeneratePixels(chunkPixelSize);
         }
     }
 

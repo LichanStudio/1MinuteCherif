@@ -21,9 +21,9 @@ MonoBehaviour:
     MultihitChance: 0
     BounceChance: 0
     PiercingChance: 0
-    Speed: 30
-    HP: 20
-    Damage: 0
+    Speed: 45
+    HP: 15
+    Damage: 10
   _additionnalStats:
     MultishotChance: 0
     MultihitChance: 0

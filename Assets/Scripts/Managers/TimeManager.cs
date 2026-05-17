@@ -49,6 +49,13 @@ public class TimeManager : MonoBehaviour
         _isPickingUpgrade = false;
         _secondsPickUpgrade = 0;
         _secondsPlayed = 0;
+        UpdateTime();
+    }
+
+    private void UpdateTime()
+    {
+        if (!GameManager.Instance.IsGamePaused()) ActionsManager.OnUpdateTime?.Invoke(_secondsPlayed, GameManager.Instance.GetSessionDuration());
+        else ActionsManager.OnUpdateRealTime?.Invoke();
     }
 
     private IEnumerator AddSecondEverySecond()
@@ -60,8 +67,7 @@ public class TimeManager : MonoBehaviour
             _totalSeconds++;
             if (_isPlaying && !GameManager.Instance.IsGamePaused()) _secondsPlayed++;
             if (_isPickingUpgrade) _secondsPickUpgrade++;
-            if (!GameManager.Instance.IsGamePaused()) ActionsManager.OnUpdateTime?.Invoke();
-            else ActionsManager.OnUpdateRealTime?.Invoke();
+            UpdateTime();
 
             if (!_isPickingUpgrade)
             {

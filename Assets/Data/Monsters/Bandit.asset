@@ -18,11 +18,17 @@ MonoBehaviour:
   _weaponData: {fileID: 0}
   _baseStats:
     MultishotChance: 0
-    Speed: 30
-    HP: 20
-    Damage: 0
+    MultihitChance: 0
+    BounceChance: 0
+    PiercingChance: 0
+    Speed: 25
+    HP: 30
+    Damage: 10
   _additionnalStats:
     MultishotChance: 0
+    MultihitChance: 0
+    BounceChance: 0
+    PiercingChance: 0
     Speed: 0
     HP: 0
     Damage: 0

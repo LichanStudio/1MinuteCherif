@@ -30,11 +30,21 @@ public class MonstersRegistry : ScriptableObject
 #endif
     }
 
-    public MonsterData GetRandomMonster()
+    public MonsterData GetRandomMonster(List<MapData.MonsterSpawnData> monstersSpawnData, float totalMonsterProb)
     {
-        //List<MapData.MonsterSpawnData> spawnData = MapsManager.Instance.GetMonstersProbs();
-        if (entities.Count == 0) return null;
-        int randomIndex = Random.Range(0, entities.Count);
-        return entities[randomIndex];
+        if (monstersSpawnData == null || monstersSpawnData.Count == 0) return null;
+
+        float randomValue = Random.Range(0f, totalMonsterProb);
+        MapData.MonsterSpawnData selectedData = monstersSpawnData[0];
+        float cumulativeProb = 0f;
+        Debug.Log($"Random Value: {randomValue}, Total Monster Prob: {totalMonsterProb}");
+        foreach (MapData.MonsterSpawnData spawnData in monstersSpawnData)
+        {
+            if(cumulativeProb <= randomValue) selectedData = spawnData;
+            else break;
+            cumulativeProb += spawnData.GetActualSpawnChance();
+        }
+
+        return selectedData.Monster;
     }
 }

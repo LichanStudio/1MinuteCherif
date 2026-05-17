@@ -11,7 +11,7 @@ public static class ActionsManager
     public static Action<Stats> OnSelectDefinitiveUpgrade;
     public static Action OnShoot;
 
-    public static Action OnUpdateTime;
+    public static Action<int, int> OnUpdateTime;
     public static Action OnUpdateRealTime;
 
     public static Action OnStartUpgradeSelection;

@@ -34,14 +34,11 @@ public class TileTexturesManager : MonoBehaviour
         int ppu = GameManager.Instance.PIXELS_PER_UNIT;
 
         int totalSprites = 0;
-
-        // 1. Calculer la taille totale nécessaire
         foreach (var rule in layerRules)
         {
             totalSprites += GetAllVariants(rule.tileType).Length;
         }
 
-        Debug.Log($"Total sprites to pack: {totalSprites}");
         _allSpritesAtlas = new NativeArray<Color32>(totalSprites * ppu * ppu, Allocator.Persistent);
         _jobRules = new NativeArray<JobLayerRule>(layerRules.Count, Allocator.Persistent);
 
@@ -50,7 +47,6 @@ public class TileTexturesManager : MonoBehaviour
         {
             Sprite[] sprites = GetAllVariants(layerRules[i].tileType);
 
-            // On remplit la règle
             _jobRules[i] = new JobLayerRule
             {
                 threshold = layerRules[i].threshold,
@@ -59,7 +55,6 @@ public class TileTexturesManager : MonoBehaviour
             };
             Debug.Log(currentPixelOffset);
 
-            // On copie les pixels des sprites dans l'atlas global
             foreach (var sprite in sprites)
             {
                 Color32[] pixels = ExtractPixelsFromSprite(sprite, ppu);
@@ -87,10 +82,6 @@ public class TileTexturesManager : MonoBehaviour
         foreach (TileTexture tileTexture in _tileTextureRegistry.Textures)
         {
             _tileSpritesMapper.Add(tileTexture.TileType, tileTexture.Variants);
-            Debug.Log($"Tile type {tileTexture.TileType} has {tileTexture.Variants.Length} variants.");
-            Debug.Log(_tileTexturesMapper);
-            Debug.Log(tileTexture.Variants);
-            Debug.Log(tileTexture.Variants.ToList());
             _tileTexturesMapper.Add(tileTexture.TileType, PrepareSpriteData(tileTexture.Variants.ToList(), GameManager.Instance.PIXELS_PER_UNIT));
         }
     }
@@ -108,16 +99,14 @@ public class TileTexturesManager : MonoBehaviour
         {
             Sprite[] sprites = GetAllVariants(layerRules[i].tileType);
 
-            // On remplit la règle
             result[i] = new JobLayerRule
             {
                 threshold = layerRules[i].threshold,
+                tileType = (int)layerRules[i].tileType,
                 dataIndex = currentPixelOffset,
                 spriteCount = sprites.Length
             };
-            Debug.Log(currentPixelOffset);
 
-            // On copie les pixels des sprites dans l'atlas global
             foreach (var sprite in sprites)
             {
                 Color32[] pixels = ExtractPixelsFromSprite(sprite, ppu);
@@ -156,7 +145,6 @@ public class TileTexturesManager : MonoBehaviour
 
     public NativeArray<Color32> PrepareSpriteData(List<Sprite> sprites, int ppu)
     {
-        Debug.Log("tileTexture.Variants");
         int totalPixels = sprites.Count * ppu * ppu;
         NativeArray<Color32> data = new(totalPixels, Allocator.Persistent);
 
@@ -165,15 +153,12 @@ public class TileTexturesManager : MonoBehaviour
             Sprite sprite = sprites[i];
             Texture2D tex = sprite.texture;
 
-            // On récupère les pixels de la zone du sprite
-            // Attention : la texture doit être marquée comme "Read/Write Enabled" dans l'importateur
             Color32[] allPixels = tex.GetPixels32();
 
             int startX = (int)sprite.rect.x;
             int startY = (int)sprite.rect.y;
             int texWidth = tex.width;
 
-            // On copie ligne par ligne pour extraire le rectangle du sprite
             for (int y = 0; y < ppu; y++)
             {
                 for (int x = 0; x < ppu; x++)
@@ -197,19 +182,14 @@ public class TileTexturesManager : MonoBehaviour
         int startY = Mathf.RoundToInt(sprite.rect.y);
         int texWidth = tex.width;
 
-        // La taille du résultat doit être exactement le nombre de pixels du sprite
         Color32[] result = new Color32[ppu * ppu];
 
         for (int y = 0; y < ppu; y++)
         {
             for (int x = 0; x < ppu; x++)
             {
-                // Position dans la texture globale
                 int texIndex = (startY + y) * texWidth + (startX + x);
-
-                // Position dans le petit tableau de destination (0 à 255 pour un 16x16)
                 int nativeArrayIndex = (y * ppu) + x;
-
                 result[nativeArrayIndex] = allPixels[texIndex];
             }
         }
