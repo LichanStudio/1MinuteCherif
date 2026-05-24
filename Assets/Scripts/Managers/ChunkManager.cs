@@ -30,10 +30,10 @@ public class ChunkManager : MonoBehaviour
 
     private void Awake()
     {
-        _ppu = GameManager.Instance.PIXELS_PER_UNIT;
-        _chunkWorldSize = chunkPixelSize / _ppu;
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
+        _ppu = GameManager.Instance.PIXELS_PER_UNIT;
+        _chunkWorldSize = chunkPixelSize / _ppu;
     }
 
     private void Update()
@@ -124,8 +124,8 @@ public class ChunkManager : MonoBehaviour
 
         foreach (Vector2Int coord in _loadedChunks.Keys)
         {
-            if (Mathf.Abs(coord.x - cx) > (RenderDistanceX*2) ||
-                Mathf.Abs(coord.y - cy) > (RenderDistanceY*2))
+            if (Mathf.Abs(coord.x - cx) > RenderDistanceX ||
+                Mathf.Abs(coord.y - cy) > RenderDistanceY)
             {
                 toRemove.Add(coord);
             }

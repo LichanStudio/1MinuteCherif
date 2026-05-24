@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2532308419005975163}
   - component: {fileID: 4656220289981803724}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EnemySpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 8477053881023789042}
   - component: {fileID: 8648876757404849946}
   - component: {fileID: 2168014114883033614}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CharacterFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -184,7 +184,7 @@ Animator:
   m_GameObject: {fileID: 7606346397610505585}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 8542494022596924086, guid: 888662263778ff846a59a5eb98995d5d, type: 3}
+  m_Controller: {fileID: -1459336179067413195, guid: ff18f5db5cc5c434eb76591638740662, type: 3}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -212,7 +212,7 @@ GameObject:
   - component: {fileID: 8071362472017358798}
   - component: {fileID: 1318762231512910139}
   - component: {fileID: 2846762832673712432}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}

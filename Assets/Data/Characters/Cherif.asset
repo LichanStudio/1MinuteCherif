@@ -25,14 +25,14 @@ MonoBehaviour:
     HP: 0
     Damage: 5
   _additionnalStats:
-    MultishotChance: 114
+    MultishotChance: 0
     MultihitChance: 0
-    BounceChance: 439
+    BounceChance: 0
     PiercingChance: 0
-    Speed: 39
-    HP: 40
-    Damage: 12
-  _isUnlockedByDefault: 0
+    Speed: 0
+    HP: 0
+    Damage: 0
+  _isUnlockedByDefault: 1
   _definitiveStats:
     MultishotChance: 0
     MultihitChance: 0

@@ -7,40 +7,48 @@ public static class ContourColliderBuilder
     /// <summary>
     /// Construit un PolygonCollider2D avec un path par îlot d'eau détecté.
     /// </summary>
-    public static void BuildWaterContours(
+    public static void BuildZonesContours(
         NativeArray<int> tileMap, int chunkSize,
-        int targetDataIndex, float pixelSize,
-        PolygonCollider2D poly)
+        float pixelSize,
+        Dictionary<int, PolygonCollider2D> collidersByRuleIndex)
     {
-        // 1. Construire la grille booléenne (pixel est eau ou non)
-        bool[] grid = new bool[chunkSize * chunkSize];
+        // Récupère tous les types présents dans la map
+        var uniqueRules = new HashSet<int>();
         for (int i = 0; i < tileMap.Length; i++)
-            grid[i] = tileMap[i] == targetDataIndex;
+            uniqueRules.Add(tileMap[i]);
 
-        // 2. Extraire les îlots (flood fill) puis tracer leur contour
-        bool[] visited = new bool[chunkSize * chunkSize];
-        var paths = new List<Vector2[]>();
-
-        for (int y = 0; y < chunkSize; y++)
+        foreach (int ruleIndex in uniqueRules)
         {
-            for (int x = 0; x < chunkSize; x++)
+            if (!collidersByRuleIndex.TryGetValue(ruleIndex, out var poly)) continue;
+
+            // Grille booléenne pour ce type
+            bool[] grid = new bool[chunkSize * chunkSize];
+            for (int i = 0; i < tileMap.Length; i++)
+                grid[i] = tileMap[i] == ruleIndex;
+
+            // Flood fill + contours
+            bool[] visited = new bool[chunkSize * chunkSize];
+            var paths = new List<Vector2[]>();
+
+            for (int y = 0; y < chunkSize; y++)
             {
-                int idx = y * chunkSize + x;
-                if (!grid[idx] || visited[idx]) continue;
+                for (int x = 0; x < chunkSize; x++)
+                {
+                    int idx = y * chunkSize + x;
+                    if (!grid[idx] || visited[idx]) continue;
 
-                // Flood fill pour isoler l'îlot
-                List<Vector2Int> island = FloodFill(grid, visited, x, y, chunkSize);
-
-                // Marching Squares sur cet îlot
-                Vector2[] contour = MarchingSquaresContour(island, chunkSize, pixelSize);
-                if (contour != null && contour.Length >= 3)
-                    paths.Add(contour);
+                    List<Vector2Int> island = FloodFill(grid, visited, x, y, chunkSize);
+                    Vector2[] contour = MarchingSquaresContour(island, chunkSize, pixelSize);
+                    if (contour != null && contour.Length >= 3)
+                        paths.Add(contour);
+                }
             }
-        }
 
-        poly.pathCount = paths.Count;
-        for (int i = 0; i < paths.Count; i++)
-            poly.SetPath(i, paths[i]);
+            poly.pathCount = paths.Count;
+            if (paths.Count > 0) poly.gameObject.SetActive(true);
+            for (int i = 0; i < paths.Count; i++)
+                poly.SetPath(i, paths[i]);
+        }
     }
 
     // ------------------------------------------------------------------

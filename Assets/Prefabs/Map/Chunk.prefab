@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2531306680376389709}
   - component: {fileID: 3409851824580250819}
   - component: {fileID: 4560146687117230332}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Chunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e06406d3a321c4c96a02752595c6a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProceduralTerrainScript
-  chunkSize: 256
   noiseScale: 0.005
   noiseSeed: 48
 --- !u!114 &4560146687117230332

@@ -2,6 +2,7 @@ using NUnit.Framework.Internal;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -16,6 +17,7 @@ public class Chunk : MonoBehaviour
 
     private static Dictionary<Vector2Int, Texture2D> textureCache = new();
     private GameObject _colliderParent;
+    private Dictionary<int, PolygonCollider2D> _ruleColliderMapper = new();
 
     void Awake()
     {
@@ -43,37 +45,65 @@ public class Chunk : MonoBehaviour
 
         spriteRenderer.sprite = generator.TextureToSprite(tex);
 
-        PolygonCollider2D poly = null;
         if (_colliderParent == null)
         {
             _colliderParent = new($"Collider_{chunkX}_{chunkY}");
             _colliderParent.transform.SetParent(transform);
             _colliderParent.transform.localPosition = Vector3.zero;
+            _colliderParent.layer = gameObject.layer;
         }
-        else
-        {
-            poly = _colliderParent.GetComponent<PolygonCollider2D>();
-        }
-        if (poly == null) poly = _colliderParent.AddComponent<PolygonCollider2D>();
-            
-        float pixelSize = 1f / GameManager.Instance.PIXELS_PER_UNIT;
 
-        ContourColliderBuilder.BuildWaterContours(
-            pixelGrid,
-            chunkSize,
-            (int)TileType.Water,
-            pixelSize,
-            poly
-        );
-        ContourColliderBuilder.BuildWaterContours(
-            pixelGrid,
-            chunkSize,
-            (int)TileType.Stone,
-            pixelSize,
-            poly
-        );
-        // TODO : gérer plusieurs poly pour les différents types
-        // Essayer de tout regrouper dans la même boucle ?
+        GenerateZones(pixelGrid, chunkSize);
+
         pixelGrid.Dispose();
+    }
+
+    private void GenerateZones(NativeArray<int> pixelGrid, int chunkSize)
+    {
+        PolygonCollider2D[] colliders = _colliderParent.GetComponentsInChildren<PolygonCollider2D>();
+        int indexPolygons = 0;
+        foreach (TileType type in System.Enum.GetValues(typeof(TileType)))
+        {
+            PolygonCollider2D poly = null;
+            TerrainScript tScript = null;
+            if (indexPolygons < colliders.Length)
+            {
+                poly = colliders[indexPolygons];
+                indexPolygons++;
+                poly.TryGetComponent(out tScript);
+            }
+            else
+            {
+                GameObject newCollider = new($"Collider_{type}");
+                newCollider.transform.SetParent(_colliderParent.transform);
+                newCollider.transform.localPosition = Vector3.zero;
+                newCollider.layer = _colliderParent.layer;
+                poly = newCollider.AddComponent<PolygonCollider2D>();
+                poly.isTrigger = true;
+                tScript = poly.AddComponent<TerrainScript>();
+            }
+            switch (type)
+            {
+                case TileType.Water:
+                    tScript.SpeedModifier = -10;
+                    break;
+            }
+
+            if (_ruleColliderMapper.ContainsKey((int)type)) _ruleColliderMapper[(int)type] = poly;
+            else _ruleColliderMapper.Add((int)type, poly);
+
+            if (poly != null)
+            {
+                poly.pathCount = 0;
+                poly.gameObject.SetActive(false);
+            }
+        }
+
+        ContourColliderBuilder.BuildZonesContours(
+            pixelGrid,
+            chunkSize,
+            1f / GameManager.Instance.PIXELS_PER_UNIT,
+            _ruleColliderMapper
+        );
     }
 }

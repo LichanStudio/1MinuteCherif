@@ -37,7 +37,6 @@ public class MonstersRegistry : ScriptableObject
         float randomValue = Random.Range(0f, totalMonsterProb);
         MapData.MonsterSpawnData selectedData = monstersSpawnData[0];
         float cumulativeProb = 0f;
-        Debug.Log($"Random Value: {randomValue}, Total Monster Prob: {totalMonsterProb}");
         foreach (MapData.MonsterSpawnData spawnData in monstersSpawnData)
         {
             if(cumulativeProb <= randomValue) selectedData = spawnData;

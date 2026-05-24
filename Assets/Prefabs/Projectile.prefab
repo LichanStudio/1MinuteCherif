@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5878449972455177303}
   - component: {fileID: 5994414298154980869}
   - component: {fileID: 3238776966065510768}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: Projectile
   m_TagString: Projectiles
   m_Icon: {fileID: 0}
@@ -47,9 +47,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f35337d67676ce4caf5fd0626b7e8f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileScript
-  _playerDataManager: {fileID: 11400000, guid: 9fefd011235b88541a80e367bc04b747, type: 2}
-  speed: 18
-  maxBounces: 3
   detectionRadius: 10
   lifeTime: 5
   enemyLayer:
@@ -187,10 +184,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.125, y: 0.375}
-      - {x: -0.034797788, y: 0.30610728}
-      - {x: 0.0625, y: 0.375}
-      - {x: 0.0625, y: 0.5625}
-      - {x: -0.02130939, y: 0.63139284}
+    - - {x: -0.18813594, y: 0.46618062}
+      - {x: -0.125, y: 0.375}
+      - {x: 0.1876463, y: 0.37291396}
+      - {x: 0.2511737, y: 0.4697039}
+      - {x: 0.18718608, y: 0.563118}
       - {x: -0.125, y: 0.5625}
   m_UseDelaunayMesh: 1

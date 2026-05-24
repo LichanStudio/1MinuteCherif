@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1027580855522775018}
   - component: {fileID: 3108345837623657927}
   - component: {fileID: 710606428407826438}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: Spear
   m_TagString: Projectiles
   m_Icon: {fileID: 0}
