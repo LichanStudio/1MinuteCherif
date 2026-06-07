@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72dc68a507129d642a6f0886514719c8, type: 3}
+  m_Name: Bushog
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterData
+  _ID: dog-bush
+  _name: Bushog
+  _animator: {fileID: -3300781842097466310, guid: 734b65b3960e7d74599cc8d845030d61, type: 3}
+  _weaponData: {fileID: 0}
+  _baseStats:
+    MultishotChance: 0
+    MultihitChance: 0
+    BounceChance: 0
+    PiercingChance: 0
+    Speed: 55
+    HP: 15
+    Damage: 10
+  _additionnalStats:
+    MultishotChance: 0
+    MultihitChance: 0
+    BounceChance: 0
+    PiercingChance: 0
+    Speed: 0
+    HP: 0
+    Damage: 0
+  _monsterPrefab: {fileID: 4097810212998132409, guid: 212beff5ccbe45a45836e842bb35d377, type: 3}

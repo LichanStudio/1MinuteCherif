@@ -32,7 +32,7 @@ MonoBehaviour:
     Speed: 0
     HP: 0
     Damage: 0
-  _isUnlockedByDefault: 1
+  _isUnlockedByDefault: 0
   _definitiveStats:
     MultishotChance: 0
     MultihitChance: 0

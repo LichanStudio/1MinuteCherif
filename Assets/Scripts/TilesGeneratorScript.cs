@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+/*using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -147,3 +147,4 @@ public class TilesGeneratorScript : MonoBehaviour
         }
     }
 }
+*/

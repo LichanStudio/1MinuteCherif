@@ -24,7 +24,7 @@ MonoBehaviour:
   _baseMultiHit: 0
   _projectileType: 1
   _baseAttackSpeed: 0.2
-  _projectileSpeed: 120
+  _projectileSpeed: 180
   _weapons:
   - AdditionalDamage: 1
     ProjectileAnimator: {fileID: 0}

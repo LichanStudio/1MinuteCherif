@@ -38,6 +38,7 @@ public class TileTexturesManager : MonoBehaviour
         {
             totalSprites += GetAllVariants(rule.tileType).Length;
         }
+        Debug.Log($"[TileTexturesManager] Total sprites to pack: {totalSprites}");
 
         _allSpritesAtlas = new NativeArray<Color32>(totalSprites * ppu * ppu, Allocator.Persistent);
         _jobRules = new NativeArray<JobLayerRule>(layerRules.Count, Allocator.Persistent);
@@ -53,7 +54,6 @@ public class TileTexturesManager : MonoBehaviour
                 dataIndex = currentPixelOffset,
                 spriteCount = sprites.Length
             };
-            Debug.Log(currentPixelOffset);
 
             foreach (var sprite in sprites)
             {

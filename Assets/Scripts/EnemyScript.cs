@@ -8,25 +8,41 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private float _stoppingDistance = 1.5f;
     [SerializeField] private float _attackRange = 1.5f;
     [SerializeField] private float _attackSpeed = 1f;
+    [SerializeField] private Color _flashColor = Color.white;
+    [SerializeField] private float _flashDuration = 0.1f;
+    [SerializeField] private float _knockbackDuration = 0.2f;
     [SerializeField] private StatusBarScript _statusBar;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private Animator _animator;
+    [SerializeField] private Animator _deleteAnimator;
 
+    private Material _originalMaterial;
     private Rigidbody2D _rigidBody;
     private MonsterData _entity;
+    private Coroutine _flashCoroutine;
     private float _timeSinceLastAttack = 0f;
     private float _speed = 5f;
     private int _damageTaken = 0;
     private bool _dying = false;
+    private bool _isKnockedBack = false;
 
     public void Awake()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
+        if (_spriteRenderer != null) _originalMaterial = _spriteRenderer.material;
     }
 
     public void OnEnable()
     {
         _timeSinceLastAttack = 99f;
         _damageTaken = 0;
+        if (_animator != null) _animator.speed = 1f;
+        if (_deleteAnimator != null) _deleteAnimator.gameObject.SetActive(false);
+        if (_spriteRenderer != null)
+        {
+            _spriteRenderer.color = new Color(_spriteRenderer.color.r, _spriteRenderer.color.g, _spriteRenderer.color.b, 1f);
+        }
+        if (_statusBar != null) _statusBar.gameObject.SetActive(true);
         ActionsManager.OnEndSession += HandleSessionEnd;
     }
 
@@ -38,8 +54,26 @@ public class EnemyScript : MonoBehaviour
     public void FixedUpdate()
     {
         if (_entity == null || MovementManager.Instance == null) return;
-        if (!_dying) _rigidBody.linearVelocity = MovementManager.Instance.MoveTowardPlayer(gameObject, _stoppingDistance) * _speed;
-        else _rigidBody.linearVelocity = Vector2.zero;
+        if (!_dying)
+        {
+            if (!_isKnockedBack)
+            {
+                _rigidBody.linearVelocity = MovementManager.Instance.MoveTowardPlayer(gameObject, _stoppingDistance) * _speed;
+            }
+        }
+        else
+        {
+            _rigidBody.linearVelocity = Vector2.zero;
+        }
+        if (_spriteRenderer != null)
+        {
+            if (IsDying())
+            {
+                float speed = 2f;
+                float newAlpha = Mathf.MoveTowards(_spriteRenderer.color.a, 0f, speed * Time.deltaTime);
+                _spriteRenderer.color = new Color(_spriteRenderer.color.r, _spriteRenderer.color.g, _spriteRenderer.color.b, newAlpha);
+            }
+        }
     }
 
     public void Update()
@@ -51,7 +85,6 @@ public class EnemyScript : MonoBehaviour
         _timeSinceLastAttack += Time.deltaTime;
         if (_timeSinceLastAttack >= _attackSpeed && sqrDistance < sqrRange)
         {
-            //ActionsManager.OnDamagePlayer?.Invoke(_entity.GetDamage());
             _timeSinceLastAttack = 0;
         }
     }
@@ -59,15 +92,13 @@ public class EnemyScript : MonoBehaviour
     public void TakeDamage(int damage, GameObject damageObject = null)
     {
         _damageTaken += damage;
-        if (_statusBar != null)
-        {
-            _statusBar.SetCurrentValue(_entity.GetTotalStats().HP - _damageTaken);
-        }
+
+        if (_statusBar != null) _statusBar.SetCurrentValue(_entity.GetTotalStats().HP - _damageTaken);
         ShowDamage(damageObject, damage);
-        if (_damageTaken >= _entity.GetTotalStats().HP)
-        {
-            HandleEntityKilled();
-        }
+        DoHitFlash();
+        StartCoroutine(KnockbackRoutine(5f));
+
+        if (_damageTaken >= _entity.GetTotalStats().HP) HandleEntityKilled();
     }
 
     private void RemoveDamageLabels()
@@ -84,8 +115,8 @@ public class EnemyScript : MonoBehaviour
     private void HandleEntityKilled()
     {
         _dying = true;
-        //if (_gameManager != null) _gameManager.AddKilledEnemy();
-        //ActionsManager.OnEntityKilled?.Invoke(entity);
+        if (_animator != null) _animator.speed = 0f;
+        if (_deleteAnimator != null) _deleteAnimator.gameObject.SetActive(true);
         StartCoroutine(DieAnimation());
     }
 
@@ -94,7 +125,9 @@ public class EnemyScript : MonoBehaviour
         if(!_dying) yield break;
         if (TryGetComponent(out CapsuleCollider2D capsuleCollider)) capsuleCollider.enabled = false;
         if (TryGetComponent(out PolygonCollider2D polyCollider)) polyCollider.enabled = false;
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.1f);
+        if (_statusBar != null) _statusBar.gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.8f);
         RemoveDamageLabels();
         yield return new WaitForSeconds(0.1f);
         Destroy(gameObject);
@@ -146,5 +179,34 @@ public class EnemyScript : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, _attackRange);
+    }
+
+    public void DoHitFlash()
+    {
+        if (_flashCoroutine != null) StopCoroutine(_flashCoroutine);
+        _flashCoroutine = StartCoroutine(FlashRoutine());
+    }
+
+    private IEnumerator FlashRoutine()
+    {
+        _originalMaterial.SetColor("_FlashColor", _flashColor);
+        _originalMaterial.SetFloat("_FlashAmount", 1f);
+
+        yield return new WaitForSeconds(_flashDuration);
+
+        _originalMaterial.SetFloat("_FlashAmount", 0f);
+    }
+
+    private IEnumerator KnockbackRoutine(float force)
+    {
+        _isKnockedBack = true;
+        _rigidBody.linearVelocity = Vector2.zero;
+
+        Vector2 knockbackDirection = (transform.position - PlayerManager.Instance.PlayerObject.transform.position).normalized;
+        _rigidBody.AddForce(knockbackDirection * force, ForceMode2D.Impulse);
+
+        yield return new WaitForSeconds(_knockbackDuration);
+
+        _isKnockedBack = false;
     }
 }

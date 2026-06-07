@@ -1,193 +1,235 @@
-using System.Collections.Generic;
+Ôªøusing System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
 public static class ContourColliderBuilder
 {
-    /// <summary>
-    /// Construit un PolygonCollider2D avec un path par Ólot d'eau dÈtectÈ.
-    /// </summary>
+    // Tableaux de travail r√©utilis√©s pour √©viter le Garbage Collector
+    private static bool[] _gridCache;
+    private static bool[] _visitedCache;
+    private static readonly Stack<Vector2Int> _floodFillStack = new();
+    private static readonly List<Vector2Int> _currentIsland = new();
+    private static readonly List<Vector2> _orderedPoints = new();
+
+    private static void AllocateCaches(int size)
+    {
+        int total = size * size;
+        if (_gridCache == null || _gridCache.Length < total)
+        {
+            _gridCache = new bool[total];
+            _visitedCache = new bool[total];
+        }
+    }
+
     public static void BuildZonesContours(
-        NativeArray<int> tileMap, int chunkSize,
-        float pixelSize,
+        NativeArray<int> tileMap, int chunkSize, float pixelSize,
         Dictionary<int, PolygonCollider2D> collidersByRuleIndex)
     {
-        // RÈcupËre tous les types prÈsents dans la map
-        var uniqueRules = new HashSet<int>();
-        for (int i = 0; i < tileMap.Length; i++)
-            uniqueRules.Add(tileMap[i]);
+        AllocateCaches(chunkSize);
 
-        foreach (int ruleIndex in uniqueRules)
+        // √âtape 1 : Trouver les r√®gles uniques sans r√©allouer de HashSet
+        // On se base sur le dictionnaire existant pass√© en param√®tre
+        foreach (var pair in collidersByRuleIndex)
         {
-            if (!collidersByRuleIndex.TryGetValue(ruleIndex, out var poly)) continue;
+            int ruleIndex = pair.Key;
+            PolygonCollider2D poly = pair.Value;
 
-            // Grille boolÈenne pour ce type
-            bool[] grid = new bool[chunkSize * chunkSize];
-            for (int i = 0; i < tileMap.Length; i++)
-                grid[i] = tileMap[i] == ruleIndex;
+            // Pr√©parer la grille bool√©enne pour cette r√®gle
+            int totalPixels = chunkSize * chunkSize;
+            bool ruleExists = false;
 
-            // Flood fill + contours
-            bool[] visited = new bool[chunkSize * chunkSize];
+            for (int i = 0; i < totalPixels; i++)
+            {
+                bool isMatch = tileMap[i] == ruleIndex;
+                _gridCache[i] = isMatch;
+                _visitedCache[i] = false;
+                if (isMatch) ruleExists = true;
+            }
+
+            if (!ruleExists) continue;
+
             var paths = new List<Vector2[]>();
 
+            // √âtape 2 : Flood fill + Moore-Neighborhood Trace (Ordre Lin√©aire)
             for (int y = 0; y < chunkSize; y++)
             {
                 for (int x = 0; x < chunkSize; x++)
                 {
                     int idx = y * chunkSize + x;
-                    if (!grid[idx] || visited[idx]) continue;
+                    if (!_gridCache[idx] || _visitedCache[idx]) continue;
 
-                    List<Vector2Int> island = FloodFill(grid, visited, x, y, chunkSize);
-                    Vector2[] contour = MarchingSquaresContour(island, chunkSize, pixelSize);
+                    // Extrait l'√Æle (remplit _currentIsland)
+                    FloodFillOptimized(chunkSize, x, y);
+
+                    // G√©n√®re le contour DIRECTEMENT ordonn√© en O(N)
+                    Vector2[] contour = TraceContourLinear(chunkSize, pixelSize);
+
                     if (contour != null && contour.Length >= 3)
+                    {
                         paths.Add(contour);
+                    }
                 }
             }
 
+            // √âtape 3 : Application physique
             poly.pathCount = paths.Count;
             if (paths.Count > 0) poly.gameObject.SetActive(true);
             for (int i = 0; i < paths.Count; i++)
+            {
                 poly.SetPath(i, paths[i]);
+            }
         }
     }
 
-    // ------------------------------------------------------------------
-    // Flood Fill : collecte tous les pixels contigus d'un mÍme Ólot
-    // ------------------------------------------------------------------
-    private static List<Vector2Int> FloodFill(
-        bool[] grid, bool[] visited, int startX, int startY, int chunkSize)
+    private static void FloodFillOptimized(int chunkSize, int startX, int startY)
     {
-        var result = new List<Vector2Int>();
-        var stack = new Stack<Vector2Int>();
-        stack.Push(new Vector2Int(startX, startY));
+        _currentIsland.Clear();
+        _floodFillStack.Clear();
+        _floodFillStack.Push(new Vector2Int(startX, startY));
 
-        while (stack.Count > 0)
+        while (_floodFillStack.Count > 0)
         {
-            var p = stack.Pop();
-            int idx = p.y * chunkSize + p.x;
-
+            var p = _floodFillStack.Pop();
             if (p.x < 0 || p.x >= chunkSize || p.y < 0 || p.y >= chunkSize) continue;
-            if (!grid[idx] || visited[idx]) continue;
 
-            visited[idx] = true;
-            result.Add(p);
+            int idx = p.y * chunkSize + p.x;
+            if (!_gridCache[idx] || _visitedCache[idx]) continue;
 
-            stack.Push(new Vector2Int(p.x + 1, p.y));
-            stack.Push(new Vector2Int(p.x - 1, p.y));
-            stack.Push(new Vector2Int(p.x, p.y + 1));
-            stack.Push(new Vector2Int(p.x, p.y - 1));
+            _visitedCache[idx] = true;
+            _currentIsland.Add(p);
+
+            _floodFillStack.Push(new Vector2Int(p.x + 1, p.y));
+            _floodFillStack.Push(new Vector2Int(p.x - 1, p.y));
+            _floodFillStack.Push(new Vector2Int(p.x, p.y + 1));
+            _floodFillStack.Push(new Vector2Int(p.x, p.y - 1));
         }
-        return result;
     }
 
-    // ------------------------------------------------------------------
-    // Marching Squares : extrait le contour vectoriel d'un Ólot
-    // ------------------------------------------------------------------
-    private static Vector2[] MarchingSquaresContour(
-        List<Vector2Int> island, int chunkSize, float pixelSize)
+    // Suivi de contour de Moore (Moore Neighborhood Tracer) : Complexit√© O(N) au lieu de O(N¬≤)
+    private static Vector2[] TraceContourLinear(int chunkSize, float pixelSize)
     {
-        // Grille locale de l'Ólot
-        var set = new HashSet<Vector2Int>(island);
+        if (_currentIsland.Count == 0) return null;
 
-        // Point de dÈpart : pixel le plus bas-gauche (ordre de parcours du tileMap)
-        Vector2Int start = island[0];
+        _orderedPoints.Clear();
 
-        // Direction : on tourne dans le sens horaire autour du contour
-        // On utilise l'algorithme "Moore neighborhood" (contour tracing)
-        var contour = new List<Vector2>();
-        var edgeSet = new HashSet<(Vector2Int, int)>(); // (pixel, edge) dÈj‡ traitÈs
+        Vector2Int startPixel = _currentIsland[0];
+        Vector2Int currentPixel = startPixel;
 
-        // Les 4 arÍtes d'un pixel : 0=bas, 1=droite, 2=haut, 3=gauche
-        Vector2Int[] neighbors = {
-            new( 0, -1), // bas
-            new( 1,  0), // droite
-            new( 0,  1), // haut
-            new(-1,  0), // gauche
-        };
+        // Directions : 0=Nord, 1=Est, 2=Sud, 3=Ouest
+        Vector2Int[] dirOffsets = { new(0, 1), new(1, 0), new(0, -1), new(-1, 0) };
+        int backtrackDir = 3;
 
-        // Coins de chaque arÍte (en coordonnÈes de pixel, sens horaire)
-        //  pixel origin = bas-gauche
-        Vector2[,] edgeVerts = {
-            { new(0,0), new(1,0) }, // bas   : BG -> BD
-            { new(1,0), new(1,1) }, // droite: BD -> HD
-            { new(1,1), new(0,1) }, // haut  : HD -> HG
-            { new(0,1), new(0,0) }, // gauche: HG -> BG
-        };
+        // ‚≠ê NOUVEAU : Variables pour suivre la direction √† la vol√©e
+        Vector2Int lastDirection = Vector2Int.zero;
+        bool firstPointAdded = false;
 
-        // Collecter toutes les arÍtes de bordure (arÍte entre un pixel eau et non-eau)
-        var borderEdges = new List<(Vector2Int pixel, int edge)>();
-        foreach (var p in island)
+        int maxIterations = _currentIsland.Count * 4;
+        int iterations = 0;
+
+        do
         {
-            for (int e = 0; e < 4; e++)
+            Vector2Int nextPixel = Vector2Int.zero;
+            bool foundNext = false;
+
+            for (int i = 0; i < 4; i++)
             {
-                Vector2Int neighbor = p + neighbors[e];
-                if (!set.Contains(neighbor))
-                    borderEdges.Add((p, e));
+                int evalDir = (backtrackDir + i) % 4;
+                Vector2Int candidate = currentPixel + dirOffsets[evalDir];
+
+                if (candidate.x >= 0 && candidate.x < chunkSize && candidate.y >= 0 && candidate.y < chunkSize)
+                {
+                    int idx = candidate.y * chunkSize + candidate.x;
+                    if (_gridCache[idx] && _visitedCache[idx])
+                    {
+                        nextPixel = candidate;
+                        backtrackDir = (evalDir + 3) % 4;
+                        foundNext = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!foundNext) break;
+
+            // ‚≠ê NOUVEAU : Calcul de la direction du pas actuel
+            Vector2Int currentDirection = nextPixel - currentPixel;
+
+            // Si la direction change, le pixel sur lequel on est (currentPixel) est un COIN !
+            if (firstPointAdded && currentDirection != lastDirection)
+            {
+                _orderedPoints.Add(new Vector2(currentPixel.x * pixelSize, currentPixel.y * pixelSize));
+            }
+            else if (!firstPointAdded)
+            {
+                // On force l'enregistrement du tout premier point de l'√Æle
+                _orderedPoints.Add(new Vector2(currentPixel.x * pixelSize, currentPixel.y * pixelSize));
+                firstPointAdded = true;
+            }
+
+            lastDirection = currentDirection;
+            currentPixel = nextPixel;
+            iterations++;
+
+        } while (currentPixel != startPixel && iterations < maxIterations);
+
+        // Toujours fermer proprement le polygone en rajoutant le point de d√©part √† la fin
+        _orderedPoints.Add(new Vector2(startPixel.x * pixelSize, startPixel.y * pixelSize));
+
+        // ‚≠ê NOUVEAU : Application d'un lissage avanc√© bas√© sur l'epsilon
+        // eps = bande d'erreur autoris√©e. Augmentez la si le lissage est trop faible (ex: 0.1), diminuez la s'il est trop fort.
+        float eps = 0.01f;
+        return SimplifyPolygonWithEpsilon(_orderedPoints, eps);
+    }
+
+    /// <summary>
+    /// Simplifie un polygone brut de Moore pour lisser les bords pix√©lis√©s en escalier.
+    /// √âlimine les points qui ne changent pas la g√©om√©trie de mani√®re significative.
+    /// </summary>
+    private static Vector2[] SimplifyPolygonWithEpsilon(List<Vector2> points, float eps)
+    {
+        if (points.Count < 3) return points.ToArray();
+
+        List<Vector2> simplified = new List<Vector2>();
+
+        // Toujours garder le tout premier point
+        simplified.Add(points[0]);
+
+        // Points interm√©diaires de Moore
+        for (int i = 1; i < points.Count - 1; i++)
+        {
+            Vector2 pPrevious = simplified[simplified.Count - 1];
+            Vector2 pCurrent = points[i];
+            Vector2 pNext = points[i + 1];
+
+            // 1. Calcul du cross-product classique pour d√©tecter les alignements parfaits (colin√©aires)
+            // Cela simplifie les grandes lignes droites sur l'axe X ou Y.
+            float area = (pCurrent.y - pPrevious.y) * (pNext.x - pCurrent.x) -
+                         (pCurrent.x - pPrevious.x) * (pNext.y - pCurrent.y);
+
+            bool perfectlyColinear = Mathf.Abs(area) < 0.0001f;
+
+            // 2. Calcul du lissage bas√© sur l'epsilon (Douglas-Peucker simplifi√©/Heuristique d'√©lagage)
+            // On calcule si le point 'pCurrent' est proche de la ligne qui relie 'pPrevious' √† 'pNext'.
+            bool nearLineApprox = false;
+            if (!perfectlyColinear)
+            {
+                // Si ce n'est pas parfaitement align√©, on v√©rifie si c'est un "mini-pas d'escalier"
+                // Heuristique simple : si le changement de direction est tr√®s faible, on fusionne.
+                Vector2 dirPrev = (pCurrent - pPrevious).normalized;
+                Vector2 dirNext = (pNext - pCurrent).normalized;
+                nearLineApprox = Vector2.Dot(dirPrev, dirNext) > (1f - eps);
+            }
+
+            // Si c'est un vrai virage (parfaitement colin√©aire ou nearLineApprox sont faux), on garde le point.
+            if (!perfectlyColinear && !nearLineApprox)
+            {
+                simplified.Add(pCurrent);
             }
         }
 
-        if (borderEdges.Count == 0) return null;
+        // Toujours garder le tout dernier point
+        simplified.Add(points[points.Count - 1]);
 
-        // Construire un graphe d'adjacence des segments de contour
-        // pour les chaÓner en polygone(s)
-        // Chaque segment = (v0, v1) en coordonnÈes monde
-        var segments = new List<(Vector2 a, Vector2 b)>();
-        foreach (var (pixel, edge) in borderEdges)
-        {
-            Vector2 v0 = new(
-                (pixel.x + edgeVerts[edge, 0].x) * pixelSize,
-                (pixel.y + edgeVerts[edge, 0].y) * pixelSize);
-            Vector2 v1 = new(
-                (pixel.x + edgeVerts[edge, 1].x) * pixelSize,
-                (pixel.y + edgeVerts[edge, 1].y) * pixelSize);
-            segments.Add((v0, v1));
-        }
-
-        return ChainSegments(segments);
-    }
-
-    // ------------------------------------------------------------------
-    // ChaÓne les segments de bordure en un polygone ordonnÈ
-    // ------------------------------------------------------------------
-    private static Vector2[] ChainSegments(List<(Vector2 a, Vector2 b)> segments)
-    {
-        if (segments.Count == 0) return null;
-
-        var result = new List<Vector2>();
-        var remaining = new List<(Vector2 a, Vector2 b)>(segments);
-
-        result.Add(remaining[0].a);
-        Vector2 current = remaining[0].b;
-        remaining.RemoveAt(0);
-
-        const float eps = 0.0001f;
-
-        while (remaining.Count > 0)
-        {
-            bool found = false;
-            for (int i = 0; i < remaining.Count; i++)
-            {
-                var (a, b) = remaining[i];
-                if (Vector2.Distance(current, a) < eps)
-                {
-                    result.Add(a);
-                    current = b;
-                    remaining.RemoveAt(i);
-                    found = true;
-                    break;
-                }
-                if (Vector2.Distance(current, b) < eps)
-                {
-                    result.Add(b);
-                    current = a;
-                    remaining.RemoveAt(i);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) break; // Ólot non connexe, on arrÍte
-        }
-
-        return result.ToArray();
+        return simplified.ToArray();
     }
 }

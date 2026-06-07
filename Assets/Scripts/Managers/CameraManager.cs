@@ -8,6 +8,9 @@ public class CameraManager : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private CinemachineCamera _virtualCamera;
 
+    private float _defaultZoomLevel = 1f;
+    private bool _isZoomedIn = false;
+
     public void Awake()
     {
         if (Instance != null) { Destroy(gameObject); return; }
@@ -23,5 +26,31 @@ public class CameraManager : MonoBehaviour
     {
         if (_virtualCamera == null) return;
         _virtualCamera.Follow = target;
+    }
+
+    public void SetTempZoomLevel(float zoomLevel)
+    {
+        if (_virtualCamera == null) return;
+        if (!_isZoomedIn) _defaultZoomLevel = _virtualCamera.Lens.OrthographicSize;
+        _virtualCamera.Lens.OrthographicSize = zoomLevel;
+        _isZoomedIn = true;
+    }
+
+    public void ResetZoomLevel()
+    {
+        if (_virtualCamera == null) return;
+        _virtualCamera.Lens.OrthographicSize = _defaultZoomLevel;
+        _isZoomedIn = false;
+    }
+
+    public float GetZoomLevel()
+    {
+        if (_virtualCamera == null) return _defaultZoomLevel;
+        return _virtualCamera.Lens.OrthographicSize;
+    }
+
+    public float GetDefaultZoomLevel()
+    {
+        return _defaultZoomLevel;
     }
 }

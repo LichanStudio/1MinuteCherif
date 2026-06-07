@@ -10,7 +10,6 @@ public class SaloonScript : MonoBehaviour
     [SerializeField] private UpgradesManager _upgradesManager;
 
     [Header("Settings")]
-    [SerializeField] private TilesGeneratorScript _tilesGenerator;
     [SerializeField] private GameObject _spawnPoint;
     [SerializeField] private List<DefinitiveUpgradeScript> _definitiveUpgrades;
 

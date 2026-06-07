@@ -15,7 +15,7 @@ MonoBehaviour:
   _ID: spear
   _name: Spear
   _enablePiercing: 1
-  _basePiercing: 1
+  _basePiercing: 2
   _enableBouncing: 0
   _baseBouncing: 0
   _enableMultiShot: 0
@@ -23,7 +23,8 @@ MonoBehaviour:
   _enableMultiHit: 0
   _baseMultiHit: 0
   _projectileType: 2
-  _projectileSpeed: 120
+  _baseAttackSpeed: 0.7
+  _projectileSpeed: 140
   _weapons:
   - AdditionalDamage: 5
     ProjectileAnimator: {fileID: 0}
