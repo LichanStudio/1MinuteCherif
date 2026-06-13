@@ -141,7 +141,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 3f211542f2aca064abbae13f299fca56, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -207,11 +207,11 @@ GameObject:
   - component: {fileID: 3092679373527088961}
   - component: {fileID: 7089656807604292082}
   - component: {fileID: 4434260614638297102}
+  - component: {fileID: 2846762832673712432}
   - component: {fileID: 8589144656303272451}
   - component: {fileID: 3736728778122757219}
   - component: {fileID: 8071362472017358798}
   - component: {fileID: 1318762231512910139}
-  - component: {fileID: 2846762832673712432}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -263,6 +263,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementScript
   _playerAnimator: {fileID: 2168014114883033614}
+--- !u!114 &2846762832673712432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9094855062923143697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a16dea9b5468b54fb2aced87802eb1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerScript
+  _hittedDuration: 0.1
+  _hittedFlash: {r: 1, g: 1, b: 1, a: 0.29803923}
+  _spriteRenderer: {fileID: 8648876757404849946}
+  _animator: {fileID: 2168014114883033614}
 --- !u!50 &8589144656303272451
 Rigidbody2D:
   serializedVersion: 5
@@ -412,17 +428,3 @@ PolygonCollider2D:
       - {x: -0.32087362, y: 0.052233815}
       - {x: 0.27153766, y: 0.07197563}
   m_UseDelaunayMesh: 1
---- !u!114 &2846762832673712432
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9094855062923143697}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a16dea9b5468b54fb2aced87802eb1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerScript
-  _HPStatusBar: {fileID: 0}
-  _playerAnimator: {fileID: 2168014114883033614}

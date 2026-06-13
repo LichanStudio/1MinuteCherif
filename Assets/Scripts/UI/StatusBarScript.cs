@@ -12,6 +12,16 @@ public class StatusBarScript : MonoBehaviour
     private float _currentValue = 100f;
     private float _targetFill = 1f;
 
+    public void OnEnable()
+    {
+        ActionsManager.OnDamagePlayer += OnDamagePlayer;
+    }
+
+    public void OnDisable()
+    {
+        ActionsManager.OnDamagePlayer -= OnDamagePlayer;
+    }
+
     void Update()
     {
         if (ForegroundImage.fillAmount != _targetFill)
@@ -43,5 +53,11 @@ public class StatusBarScript : MonoBehaviour
         {
             _targetFill = _maxValue > 0 ? _currentValue / _maxValue : 0;
         }
+    }
+
+    public void OnDamagePlayer(PlayerScript player, int damage)
+    {
+        if (player == null) return;
+        SetCurrentValue(_currentValue - damage);
     }
 }

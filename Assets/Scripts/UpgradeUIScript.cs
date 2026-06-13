@@ -27,7 +27,6 @@ public class UpgradeUIScript : MonoBehaviour, IPointerClickHandler
 
     public void SetUpgrades(Stats charactersUpgrades, Stats enemiesUpgrades, float playerEff, float enemyEff)
     {
-        Debug.Log("Setting up upgrades with player efficiency: " + playerEff + " and enemy efficiency: " + enemyEff);
         _characterUpgrades = charactersUpgrades;
         _enemiesUpgrades = enemiesUpgrades;
         UpdateUI(playerEff, enemyEff);

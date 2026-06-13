@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 72dc68a507129d642a6f0886514719c8, type: 3}
-  m_Name: SlimeBlue
+  m_Name: RedStar
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
-  _ID: slime-blue
-  _name: Blue Slime
-  _animator: {fileID: 7996758893268034096, guid: 039e276cde34c2b4a90315743395b4ba, type: 3}
+  _ID: red-star
+  _name: Red Star
+  _animator: {fileID: 6945263308269824633, guid: e1532841cbaeab6418d4b5cb904ffb05, type: 3}
   _weaponData: {fileID: 0}
   _baseStats:
     MultishotChance: 0
     MultihitChance: 0
     BounceChance: 0
     PiercingChance: 0
-    Speed: 30
-    HP: 30
+    Speed: 25
+    HP: 60
     Damage: 5
   _additionnalStats:
     MultishotChance: 0

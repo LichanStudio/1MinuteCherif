@@ -32,17 +32,17 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 0
         value: 1
-        inSlope: -1
-        outSlope: -1
+        inSlope: -0.9
+        outSlope: -0.9
         tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
-        value: 0
-        inSlope: -1
-        outSlope: -1
+        value: 0.1
+        inSlope: -0.9
+        outSlope: -0.9
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
@@ -50,7 +50,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  - Monster: {fileID: 11400000, guid: d4e2a4bef005a554a83e8d70e8614984, type: 2}
+  - Monster: {fileID: 11400000, guid: e56bf8a3e69336f48af956da0b23bdbd, type: 2}
     SpawnChanceCurve:
       serializedVersion: 2
       m_Curve:
@@ -84,7 +84,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  - Monster: {fileID: 11400000, guid: 75d6e50e959f558419362d5adb5655f2, type: 2}
+  - Monster: {fileID: 11400000, guid: 4134862777867894fb796dcca96b0c96, type: 2}
     SpawnChanceCurve:
       serializedVersion: 2
       m_Curve:

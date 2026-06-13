@@ -1,11 +1,7 @@
 using UnityEngine;
 
-public class PlayerScript : MonoBehaviour
+public class PlayerScript : EntityScript
 {
-    [Header("Settings")]
-    [SerializeField] private StatusBarScript _HPStatusBar;
-    [SerializeField] private Animator _playerAnimator;
-
     private float recoveryRate = 1f;
     private float _timeSinceRecovery = 0f;
 
@@ -13,7 +9,6 @@ public class PlayerScript : MonoBehaviour
 
     public void OnEnable()
     {
-        if(_HPStatusBar != null) _HPStatusBar.AutoMask = false;
         ActionsManager.OnDamageEnemy += OnDamageEnemy;
     }
 
@@ -44,6 +39,7 @@ public class PlayerScript : MonoBehaviour
             ActionsManager.OnPlayerKilled?.Invoke();
         }*/
         ActionsManager.OnDamagePlayer?.Invoke(this, damage);
+        OnHitted();
     }
 
     public void OnDamageEnemy(EnemyScript enemyScript, int damage)
@@ -59,7 +55,7 @@ public class PlayerScript : MonoBehaviour
 
     public void SetAnimatorController(RuntimeAnimatorController animatorController)
     {
-        if(_playerAnimator == null) return;
-        _playerAnimator.runtimeAnimatorController = animatorController;
+        if(_animator == null) return;
+        _animator.runtimeAnimatorController = animatorController;
     }
 }

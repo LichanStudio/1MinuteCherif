@@ -42,7 +42,6 @@ public class UpgradesRegistry : ScriptableObject
     public UpgradeData GetRandomUpgrade(UpgradeConstraint constraint)
     {
         if (upgrades.Count == 0) return null;
-        Debug.Log(constraint.pierceEnabled);
         List<UpgradeData> filteredEntities = upgrades.FindAll(upgrade =>
             upgrade.GetUpgradeType() == UpgradeData.UpgradeType.Default ||
             (constraint.bounceEnabled && upgrade.GetUpgradeType() == UpgradeData.UpgradeType.Bounce) ||

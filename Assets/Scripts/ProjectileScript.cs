@@ -69,6 +69,7 @@ public class ProjectileScript : MonoBehaviour
                 for (int i = 0; i < _countMultihits; i++)
                 {
                     DamageManager.Instance.OnDamageEnemy(enemy, _damage);
+                    enemy.SetKnockbackDirection((enemy.transform.position - transform.position).normalized);
                 }
             }
 
