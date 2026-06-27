@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FinalMapMaterial
+  m_Shader: {fileID: -6465566751694194690, guid: 1cb9cbcdf57dfdd4e82769bf399f9028, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _FlipbookNoise_a59e148f1db8443ea529e94b0242329a_MapTexture_2634138355_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MapFlipbook_00b0965ccbaa414c83d6486d82bedeab_Texture_3405356032_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 97aa64b0adb160447b4bab76d4a6152b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MapFlipbook_7665326128854304a57d91fd264a5173_Texture_3405356032_Texture2D:
+        m_Texture: {fileID: 2800000, guid: e6769517e7f0b034fb6abe18b9ccc76f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MapFlipbook_9f5501c37b92484e984af8006ba0c0e9_Texture_3405356032_Texture2D:
+        m_Texture: {fileID: 2800000, guid: a446181bae3291241bd4c4e82b8e19da, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MapFlipbook_cac4e715fa2042eba6350a81604680b2_Texture_3405356032_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 948f96f24eed96c448bf4b9216d4a3d3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MapFlipbook_cace2748566f43ca9118324ef842cbcd_Texture_3405356032_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 948f96f24eed96c448bf4b9216d4a3d3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MapFlipbook_f9ed14b9f1f548efa684279d305c8ae9_Texture_3405356032_Texture2D:
+        m_Texture: {fileID: 2800000, guid: e6769517e7f0b034fb6abe18b9ccc76f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MapTexture:
+        m_Texture: {fileID: 8600000, guid: 721317ecabc9e9f43881642ff39da996, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_487924c035a5401da1c66933f814a17c_Out_0_Texture2D:
+        m_Texture: {fileID: 8600000, guid: 721317ecabc9e9f43881642ff39da996, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - White: {r: 1, g: 1, b: 1, a: 1}
+    - _PlayerPosition: {r: 0, g: 0, b: 0, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!114 &291377500318596930
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
+  version: 10

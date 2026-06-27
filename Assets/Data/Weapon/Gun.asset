@@ -14,17 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
   _ID: gun
   _name: Gun
-  _enablePiercing: 0
-  _basePiercing: 0
-  _enableBouncing: 1
-  _baseBouncing: 0
-  _enableMultiShot: 1
-  _baseMultiShot: 0
-  _enableMultiHit: 0
-  _baseMultiHit: 0
+  _attackType: 0
   _projectileType: 1
   _baseAttackSpeed: 0.2
   _projectileSpeed: 180
+  _rangeStats:
+    Range: 120
+    Piercing:
+      Enabled: 0
+      BaseValue: 0
+    Bouncing:
+      Enabled: 0
+      BaseValue: 0
+    MultiShot:
+      Enabled: 0
+      BaseValue: 0
+    MultiHit:
+      Enabled: 0
+      BaseValue: 0
+    ProjectileSpeed:
+      Enabled: 0
+      BaseValue: 50
   _weapons:
   - AdditionalDamage: 1
     ProjectileAnimator: {fileID: 0}

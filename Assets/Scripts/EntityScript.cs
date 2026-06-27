@@ -11,6 +11,12 @@ public class EntityScript : MonoBehaviour
     [SerializeField] protected Animator _animator;
 
     private Coroutine _flashCoroutine;
+    protected Collider2D[] _colliders2D;
+
+    public virtual void Awake()
+    {
+        _colliders2D = GetComponents<Collider2D>();
+    }
 
     protected void OnHitted()
     {

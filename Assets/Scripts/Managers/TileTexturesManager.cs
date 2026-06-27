@@ -86,8 +86,6 @@ public class TileTexturesManager : MonoBehaviour
         }
     }
 
-
-
     public NativeArray<JobLayerRule> GetMapRules(MapData mapData)
     {
         List<LayerRule> layerRules = mapData.LayerRules;

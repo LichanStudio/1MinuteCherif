@@ -28,8 +28,7 @@ public class ChunkManager : MonoBehaviour
     private bool _init = false;
     private int _generationId = 0;
     private float _chunkWorldSize = 1.0f;
-    private List<Vector2Int> _sortedCoords = new();
-    private Vector2Int _lastLoadCenter = Vector2Int.zero;
+    private ChunkTextureGenerator _chunkGenerator;
 
     private Coroutine _loadCoroutine;
     private Coroutine _unloadCoroutine;
@@ -44,7 +43,8 @@ public class ChunkManager : MonoBehaviour
 
     private void Start()
     {
-        GetComponent<ChunkTextureGenerator>().InitializeStaticData();
+        _chunkGenerator = GetComponent<ChunkTextureGenerator>();
+        ReloadMapData();
     }
 
     private void Update()
@@ -58,6 +58,12 @@ public class ChunkManager : MonoBehaviour
         }
 
         ApplyReadyChunks();
+    }
+
+    public void ReloadMapData()
+    {
+        _chunkGenerator.UpdateSpriteAltas();
+        _chunkGenerator.UpdateMapRules();
     }
 
     private void UpdateChunks(Vector2Int playerChunk)

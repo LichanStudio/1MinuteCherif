@@ -11,6 +11,50 @@ public class WeaponData : ScriptableObject
         Throwable
     }
 
+    public enum AttackType
+    {
+        None,
+        Slash
+    }
+
+    [Serializable]
+    private class WeaponStat
+    {
+        public bool Enabled = false;
+        public int BaseValue = 0;
+    }
+
+    [Serializable]
+    private class RangeStats
+    {
+        public int Range = 0;
+        public WeaponStat Piercing = new()
+        {
+            Enabled = false,
+            BaseValue = 0
+        };
+        public WeaponStat Bouncing = new()
+        {
+            Enabled = false,
+            BaseValue = 0
+        };
+        public WeaponStat MultiShot = new()
+        {
+            Enabled = false,
+            BaseValue = 0
+        };
+        public WeaponStat MultiHit = new()
+        {
+            Enabled = false,
+            BaseValue = 0
+        };
+        public WeaponStat ProjectileSpeed = new()
+        {
+            Enabled = false,
+            BaseValue = 50
+        };
+    }
+
     [Serializable]
     public class Weapon
     {
@@ -23,17 +67,11 @@ public class WeaponData : ScriptableObject
     [Header("Informations")]
     [SerializeField] private string _ID;
     [SerializeField] private string _name;
-    [SerializeField] private bool _enablePiercing;
-    [SerializeField] private int _basePiercing = 0;
-    [SerializeField] private bool _enableBouncing;
-    [SerializeField] private int _baseBouncing = 0;
-    [SerializeField] private bool _enableMultiShot;
-    [SerializeField] private int _baseMultiShot = 0;
-    [SerializeField] private bool _enableMultiHit;
-    [SerializeField] private int _baseMultiHit = 0;
+    [SerializeField] private AttackType _attackType;
     [SerializeField] private ProjectileType _projectileType;
     [SerializeField] private float _baseAttackSpeed = 0.7f;
     [SerializeField] private int _projectileSpeed = 50;
+    [SerializeField] private RangeStats _rangeStats = new();
     [SerializeField] private Weapon[] _weapons;
     [SerializeField] private GameObject _weaponPrefab;
 
@@ -56,45 +94,61 @@ public class WeaponData : ScriptableObject
 
     public int GetMaxPiercing()
     {
-        if (!_enablePiercing) return 0;
-        return _basePiercing;
+        if (!_rangeStats.Piercing.Enabled) return 0;
+        return _rangeStats.Piercing.BaseValue;
     }
 
     public int GetMaxBounces()
     {
-        if (!_enableBouncing) return 0;
-        return _baseBouncing;
+        if (!_rangeStats.Bouncing.Enabled) return 0;
+        return _rangeStats.Bouncing.BaseValue;
     }
 
     public int GetMaxMultiShot()
     {
-        if (!_enableMultiShot) return 0;
-        return _baseMultiShot;
+        if (!_rangeStats.MultiShot.Enabled) return 0;
+        return _rangeStats.MultiShot.BaseValue;
     }
 
     public int GetMaxMultiHit()
     {
-        if (!_enableMultiHit) return 0;
-        return _baseMultiHit;
+        if (!_rangeStats.MultiHit.Enabled) return 0;
+        return _rangeStats.MultiHit.BaseValue;
     }
 
     public bool IsPiercingEnabled()
     {
-        return _enablePiercing;
+        return _rangeStats.Piercing.Enabled;
     }
 
     public bool IsMultiShotEnabled()
     {
-        return _enableMultiShot;
+        return _rangeStats.MultiShot.Enabled;
     }
 
     public bool IsMultiHitEnabled()
     {
-        return _enableMultiHit;
+        return _rangeStats.MultiHit.Enabled;
     }
 
     public bool IsBouncingEnabled()
     {
-        return _enableBouncing;
+        return _rangeStats.Bouncing.Enabled;
+    }
+
+    public AttackType GetAttackType()
+    {
+        return _attackType;
+    }
+
+    public ProjectileType GetProjectileType()
+    {
+        return _projectileType;
+    }
+
+    public float GetRange()
+    {
+        if(_projectileType == ProjectileType.None) return 1.5f;
+        return _rangeStats.Range / 10f;
     }
 }

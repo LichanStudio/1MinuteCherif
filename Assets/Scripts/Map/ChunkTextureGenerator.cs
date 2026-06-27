@@ -20,14 +20,21 @@ public class ChunkTextureGenerator : MonoBehaviour
         _instanceCount++;
     }
 
-    public void InitializeStaticData()
+    public void UpdateSpriteAltas()
     {
-        if (_cachedAtlas.IsCreated) return;
-
         var atlasData = TileTexturesManager.Instance.AllSpritesAtlas;
-        _cachedAtlas = new NativeArray<Color32>(atlasData, Allocator.Persistent);
+        if (atlasData == null) return;
+        if (_cachedAtlas.IsCreated) _cachedAtlas.Dispose();
 
+        _cachedAtlas = new NativeArray<Color32>(atlasData, Allocator.Persistent);
+    }
+
+    public void UpdateMapRules()
+    {
         var rules = MapsManager.Instance.GetActualMapRules();
+        if (rules == null) return;
+        if (_cachedRules.IsCreated) _cachedRules.Dispose();
+
         _cachedRules = new NativeArray<GeneratePixelsJob.JobLayerRule>(rules, Allocator.Persistent);
     }
 

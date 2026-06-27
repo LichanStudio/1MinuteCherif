@@ -7,6 +7,10 @@ public class PlayerMovementScript : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private Animator _playerAnimator;
 
+    [Header("Game Objects")]
+    [SerializeField] private Material _mapNoise;
+    [SerializeField] private Material _mapRender;
+
     private Rigidbody2D _rigidBody;
     private Vector2 _moveInput;
     private MovementManager.MovementType _currentMovementType = MovementManager.MovementType.Idle;
@@ -49,5 +53,13 @@ public class PlayerMovementScript : MonoBehaviour
     {
         int speed = CharacterManager.Instance.SelectedCharacter.GetTotalStats().Speed;
         _rigidBody.linearVelocity = _moveInput * (float)(speed / 10f);
+    }
+
+    public void Update()
+    {
+        _mapNoise.SetVector("_PlayerPosition", transform.position);
+        MapData mapData = MapsManager.Instance.GetActualMap();
+        if (mapData == null || mapData.MapMaterial == null) return;
+        mapData.MapMaterial.SetVector("_PlayerPosition", transform.position);
     }
 }

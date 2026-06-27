@@ -20,10 +20,15 @@ public class MapData : ScriptableObject
     }
 
     [Header("Informations")]
+    [SerializeField] private string _id;
     [SerializeField] private string _name;
+    [SerializeField] private Material _material;
     [SerializeField] private List<LayerRule> _layerRule;
     [SerializeField] private List<MonsterSpawnData> _monsterSpawnData;
 
     public List<LayerRule> LayerRules => _layerRule;
     public List<MonsterSpawnData> MonsterSpawnDataList => _monsterSpawnData;
+    public string MapName => _name;
+    public string Id => _id;
+    public Material MapMaterial => _material;
 }

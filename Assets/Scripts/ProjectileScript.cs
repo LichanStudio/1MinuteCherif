@@ -22,6 +22,7 @@ public class ProjectileScript : MonoBehaviour
     private int _countMultihits = 1;
     private int _damage = 0;
     private EntityData _casterData;
+    private bool _targetEnemies = true;
 
     void Awake()
     {
@@ -55,61 +56,75 @@ public class ProjectileScript : MonoBehaviour
         _countMultihits = 1;
     }
 
+    public void SetTargetEnemies(bool targetEnemies)
+    {
+        _targetEnemies = targetEnemies;
+    }
+
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider != null && !collider.IsDestroyed() && collider.gameObject != null && collider.isTrigger && collider.CompareTag("Enemy"))
+        if (collider == null || !collider.isTrigger || collider.IsDestroyed() || collider.gameObject == null) return;
+
+        if (_targetEnemies && !collider.CompareTag("Enemy")) return;
+        else if(!_targetEnemies && !collider.CompareTag("Player")) return;
+
+        if (_hittedTargets.ContainsKey(collider.gameObject)) return;
+
+        _hittedTargets.Add(collider.gameObject, collider);
+
+        if (_targetEnemies && collider.gameObject.TryGetComponent(out EnemyScript enemy))
         {
-            if (_hittedTargets.ContainsKey(collider.gameObject)) return;
-
-            _hittedTargets.Add(collider.gameObject, collider);
-
-            if (collider.gameObject.TryGetComponent(out EnemyScript enemy))
+            if (enemy.IsDying()) return;
+            for (int i = 0; i < _countMultihits; i++)
             {
-                if (enemy.IsDying()) return;
-                for (int i = 0; i < _countMultihits; i++)
+                DamageManager.Instance.OnDamageEnemy(enemy, _damage);
+                enemy.SetKnockbackDirection((enemy.transform.position - transform.position).normalized);
+            }
+        }
+        else if(!_targetEnemies && collider.gameObject.TryGetComponent(out PlayerScript player))
+        {
+            for (int i = 0; i < _countMultihits; i++)
+            {
+                DamageManager.Instance.OnDamagePlayer(player, _damage);
+            }
+        }
+
+        /*if (!_isMagic && _playerDataManager.GetChanceOfMulti() > Random.Range(0, 100))
+        {
+            for (int i = 0; i < _playerDataManager.GetMultiCount(); i++)
+            {
+                if (Instantiate(gameObject, transform.position, Quaternion.identity).TryGetComponent(out ProjectileScript projectile))
                 {
-                    DamageManager.Instance.OnDamageEnemy(enemy, _damage);
-                    enemy.SetKnockbackDirection((enemy.transform.position - transform.position).normalized);
+                    projectile.SetMagic(true);
+                    projectile.SetInitialDirection(new(Random.Range(-1f, 1f), Random.Range(-1f, 1f)));
+                    //projectile.SetHittedTargets(new Dictionary<GameObject, Collider2D>(_hittedTargets));
                 }
             }
+            Destroy(gameObject);
+            return;
+        }
 
-            /*if (!_isMagic && _playerDataManager.GetChanceOfMulti() > Random.Range(0, 100))
-            {
-                for (int i = 0; i < _playerDataManager.GetMultiCount(); i++)
-                {
-                    if (Instantiate(gameObject, transform.position, Quaternion.identity).TryGetComponent(out ProjectileScript projectile))
-                    {
-                        projectile.SetMagic(true);
-                        projectile.SetInitialDirection(new(Random.Range(-1f, 1f), Random.Range(-1f, 1f)));
-                        //projectile.SetHittedTargets(new Dictionary<GameObject, Collider2D>(_hittedTargets));
-                    }
-                }
-                Destroy(gameObject);
-                return;
-            }
+        if (_isMagic || _currentBounces > _playerDataManager.GetBouncesMax())
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            RedirectToNearestEnemy();
+        }*/
 
-            if (_isMagic || _currentBounces > _playerDataManager.GetBouncesMax())
-            {
-                Destroy(gameObject);
-            }
-            else
-            {
-                RedirectToNearestEnemy();
-            }*/
-
-            if (_currentBounces < _maxBounces)
-            {
-                _currentBounces++;
-                RedirectToNearestEnemy();
-            }
-            else if (_currentPierces < _maxPierces)
-            {
-                _currentPierces++;
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+        if (_currentBounces < _maxBounces)
+        {
+            _currentBounces++;
+            RedirectToNearestEnemy();
+        }
+        else if (_currentPierces < _maxPierces)
+        {
+            _currentPierces++;
+        }
+        else
+        {
+            Destroy(gameObject);
         }
     }
 

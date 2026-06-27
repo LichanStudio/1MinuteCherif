@@ -11,4 +11,6 @@ public class MonsterData : EntityData
         if (_monsterPrefab == null) return null;
         return Instantiate(_monsterPrefab, monsterPos, Quaternion.identity);
     }
+
+
 }

@@ -9,7 +9,7 @@ public static class ActionsManager
     public static Action<Stats> OnTryBuyUpgrade;
     public static Action<Stats, Stats> OnSelectUpgrade;
     public static Action<Stats> OnSelectDefinitiveUpgrade;
-    public static Action OnShoot;
+    public static Action OnSpawnProjectile;
 
     public static Action<int, int> OnUpdateTime;
     public static Action OnUpdateRealTime;
@@ -25,4 +25,9 @@ public static class ActionsManager
     // --------------- ENEMIES ---------------
     public static Action<EnemyScript, int> OnDamageEnemy;
     public static Action<MonsterData> OnEntityKilled;
+
+    // ---------------   UI   ---------------
+    public static Action<int> OnSlideCards;
+    public static Action OnButtonStartPressed;
+    public static Action<string> OnSelectMap;
 }

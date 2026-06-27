@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b8ddc70786ce85448cb901e82e0dbb5, type: 3}
+  m_Name: Spore
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  _ID: spear
+  _name: Spear
+  _attackType: 0
+  _projectileType: 1
+  _baseAttackSpeed: 0.7
+  _projectileSpeed: 50
+  _rangeStats:
+    Range: 120
+    Piercing:
+      Enabled: 0
+      BaseValue: 0
+    Bouncing:
+      Enabled: 0
+      BaseValue: 0
+    MultiShot:
+      Enabled: 0
+      BaseValue: 0
+    MultiHit:
+      Enabled: 0
+      BaseValue: 0
+    ProjectileSpeed:
+      Enabled: 0
+      BaseValue: 50
+  _weapons:
+  - AdditionalDamage: 5
+    ProjectileAnimator: {fileID: 0}
+    HitAnimator: {fileID: 0}
+    Sprite: {fileID: 7180988652155079440, guid: 80e1972a960c8e24f9d3ffea69da1df7, type: 3}
+  _weaponPrefab: {fileID: 5590576436893789190, guid: 62726cbb049da31409e7b9fd7ce8f63b, type: 3}

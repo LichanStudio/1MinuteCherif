@@ -17,6 +17,9 @@ public class MovementManager : MonoBehaviour
         Run
     }
 
+    private float _teleportZone = 1000f;
+    private float _avoidZone = 100f;
+
     public static MovementManager Instance { get; private set; }
 
     private void Awake()
@@ -41,5 +44,36 @@ public class MovementManager : MonoBehaviour
     {
         if (PlayerManager.Instance == null || PlayerManager.Instance.PlayerObject == null) return;
         PlayerManager.Instance.PlayerObject.transform.position = newPosition;
+    }
+
+    public void RandomTeleportPlayer()
+    {
+        int coteAuHasard = UnityEngine.Random.Range(0, 4);
+        Vector2 positionSpawn = Vector2.zero;
+
+        switch (coteAuHasard)
+        {
+            case 0: // Bande GAUCHE
+                positionSpawn.x = UnityEngine.Random.Range(-_teleportZone, -_avoidZone);
+                positionSpawn.y = UnityEngine.Random.Range(_teleportZone, _teleportZone);
+                break;
+
+            case 1: // Bande DROITE
+                positionSpawn.x = UnityEngine.Random.Range(_avoidZone, _teleportZone);
+                positionSpawn.y = UnityEngine.Random.Range(_teleportZone, _teleportZone);
+                break;
+
+            case 2: // Bande INFÉRIEURE (on restreint le X pour ne pas doubler les coins)
+                positionSpawn.x = UnityEngine.Random.Range(-_avoidZone, _avoidZone);
+                positionSpawn.y = UnityEngine.Random.Range(_teleportZone, -_avoidZone);
+                break;
+
+            case 3: // Bande SUPÉRIEURE (on restreint le X pour ne pas doubler les coins)
+                positionSpawn.x = UnityEngine.Random.Range(-_avoidZone, _avoidZone);
+                positionSpawn.y = UnityEngine.Random.Range(_avoidZone, _teleportZone);
+                break;
+        }
+
+        TeleportPlayer(positionSpawn);
     }
 }

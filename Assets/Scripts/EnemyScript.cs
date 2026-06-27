@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class EnemyScript : EntityScript
 {
     [Header("Settings")]
     [SerializeField] private GameObject _damageContainer;
-    [SerializeField] private float _stoppingDistance = 1.5f;
     [SerializeField] private float _attackRange = 1.5f;
     [SerializeField] private float _attackSpeed = 4f;
 
@@ -40,9 +41,12 @@ public class EnemyScript : EntityScript
     private int _damageTaken = 0;
     private bool _dying = false;
     private bool _isKnockedBack = false;
+    private const float _DEFAULT_ATTACK_SPEED = 0.7f;
 
-    public void Awake()
+    public override void Awake()
     {
+        base.Awake();
+
         _rigidBody = GetComponent<Rigidbody2D>();
 
         _enemyContactFilter = new();
@@ -83,7 +87,7 @@ public class EnemyScript : EntityScript
         {
             if (!_isKnockedBack)
             {
-                Vector2 moveVelocity = MovementManager.Instance.MoveTowardPlayer(gameObject, _stoppingDistance) * _speed;
+                Vector2 moveVelocity = MovementManager.Instance.MoveTowardPlayer(gameObject, _attackRange) * _speed;
 
                 _avoidanceCooldown -= Time.fixedDeltaTime;
                 if (_avoidanceCooldown <= 0f)
@@ -118,7 +122,25 @@ public class EnemyScript : EntityScript
         if (_timeSinceLastAttack >= _attackSpeed && sqrDistance < sqrRange)
         {
             _timeSinceLastAttack = 0;
-            AnimationManager.Instance.StartAttackAnimation(_animator, _entity);
+            AnimationManager.Instance.StartAttackAnimation(_animator, _entity, OnAttackEntity);
+        }
+    }
+
+    private void OnAttackEntity()
+    {
+        if (_entity == null || _entity.IsDestroyed()) return;
+        bool isRanged = _entity.WeaponData != null && _entity.WeaponData.GetProjectileType() != WeaponData.ProjectileType.None;
+        if (isRanged)
+        {
+            Vector2 target = PlayerManager.Instance.PlayerObject.transform.position;
+            StartCoroutine(ProjectilesManager.Instance.SpawnProjectiles(_entity, transform.position, target));
+        }
+        else if (PlayerManager.Instance != null && PlayerManager.Instance.PlayerObject != null)
+        {
+            if (PlayerManager.Instance.PlayerObject.TryGetComponent(out PlayerScript playerScript))
+            {
+                playerScript.TakeDamage(_entity.GetTotalStats().Damage);
+            }
         }
     }
 
@@ -188,7 +210,9 @@ public class EnemyScript : EntityScript
     {
         _entity = monsterData;
         _speed = monsterData.GetTotalStats().Speed / 10f;
-        _animationSpeed = 0.9f + (_speed / 30f); // base speed = 30f;
+        // -----------------------
+        // speed
+        _animationSpeed = 0.9f + (_speed / 30f); // base speed = 30 / 10f => 0.9f + 0.1f;
         if (_statusBar != null)
         {
             _statusBar.SetMaxValue(_entity.GetTotalStats().HP);
@@ -199,6 +223,10 @@ public class EnemyScript : EntityScript
             _animator.runtimeAnimatorController = monsterData.Animator;
             _animator.Play("run_front");
             _animator.speed = _animationSpeed;
+        }
+        if (_entity.WeaponData != null)
+        {
+            _attackRange = _entity.WeaponData.GetRange();
         }
     }
 
@@ -270,7 +298,7 @@ public class EnemyScript : EntityScript
         Vector2 avoidanceVector = Vector2.zero;
         int validNeighbors = 0;
         // -------------------------------------
-        Vector2 desiredDirection = MovementManager.Instance.MoveTowardPlayer(gameObject, _stoppingDistance).normalized;
+        Vector2 desiredDirection = MovementManager.Instance.MoveTowardPlayer(gameObject, _attackRange).normalized;
         Vector2 perpendicularLeft = new(-desiredDirection.y, desiredDirection.x);
         Vector2 perpendicularRight = new(desiredDirection.y, -desiredDirection.x);
 

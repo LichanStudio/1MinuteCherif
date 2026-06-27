@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc2c4194ac95a1745b4f5a69b1cb053b, type: 3}
   m_Name: Test
   m_EditorClassIdentifier: Assembly-CSharp::MapData
+  _id: test
   _name: AAA
   _layerRule:
-  - tileType: 4
+  - tileType: 2
     threshold: 0.85
-  - tileType: 3
-    threshold: 0.353
   - tileType: 0
+    threshold: 0.353
+  - tileType: 2
     threshold: 0.15
-  - tileType: 3
+  - tileType: 4
     threshold: 0.1
   - tileType: 2
     threshold: 0

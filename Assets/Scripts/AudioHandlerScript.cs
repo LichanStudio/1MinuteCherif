@@ -23,7 +23,7 @@ public class AudioHandlerScript : MonoBehaviour
         ActionsManager.OnDamagePlayer += OnDamagePlayer;
         ActionsManager.OnStartSession += OnSessionStart;
         ActionsManager.OnEndSession += OnSessionEnd;
-        ActionsManager.OnShoot += OnShoot;
+        ActionsManager.OnSpawnProjectile += OnShoot;
         ActionsManager.OnSelectDefinitiveUpgrade += OnBuyUpgrade;
     }
 
@@ -33,7 +33,7 @@ public class AudioHandlerScript : MonoBehaviour
         ActionsManager.OnDamagePlayer -= OnDamagePlayer;
         ActionsManager.OnStartSession -= OnSessionStart;
         ActionsManager.OnEndSession -= OnSessionEnd;
-        ActionsManager.OnShoot -= OnShoot;
+        ActionsManager.OnSpawnProjectile -= OnShoot;
         ActionsManager.OnSelectDefinitiveUpgrade -= OnBuyUpgrade;
     }
 

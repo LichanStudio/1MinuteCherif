@@ -76,38 +76,33 @@ public class AnimationManager : MonoBehaviour
         }
     }
 
-    public void StartAttackAnimation(Animator animator, EntityData caster, Action callback = null)
+    public void StartAttackAnimation(Animator animator, EntityData caster, Action actionCallback = null)
     {
         if (!_animationMapper.ContainsKey(animator)) _animationMapper.Add(animator, new());
-        _animationMapper[animator].StartCoroutine(this, AttackRoutine(animator, caster, callback));
+        _animationMapper[animator].StartCoroutine(this, AttackRoutine(animator, caster, actionCallback));
     }
 
     public void StartHittedAnimation(Animator animator)
     {
         if (!_animationMapper.ContainsKey(animator)) _animationMapper.Add(animator, new());
+        if (_animationMapper[animator].IsAttacking) return;
         _animationMapper[animator].StartCoroutine(this, HittedRoutine(animator));
     }
 
-    private IEnumerator AttackRoutine(Animator animator, EntityData caster, Action callback = null)
+    private IEnumerator AttackRoutine(Animator animator, EntityData caster, Action actionCallback = null)
     {
+        if (animator == null || animator.IsDestroyed()) yield break;
         _animationMapper[animator].IsAttacking = true;
         PlayAnimation(animator, _attackAnimationName);
+        yield return null;
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         float animationDuration = stateInfo.length;
-        float attackDuration = GetTimeOfKeyframe(animator.runtimeAnimatorController.animationClips[0], 5);
+        float attackDuration = GetTimeOfKeyframe(animator.runtimeAnimatorController.animationClips[0], 3);
         yield return new WaitForSeconds(attackDuration);
-        if (PlayerManager.Instance != null && PlayerManager.Instance.PlayerObject != null)
-        {
-            if (PlayerManager.Instance.PlayerObject.TryGetComponent(out PlayerScript playerScript))
-            {
-                playerScript.TakeDamage(caster.GetTotalStats().Damage);
-                Debug.Log($"[EnemyScript] Dealt {caster.GetTotalStats().Damage} damage to player.");
-            }
-        }
+        actionCallback?.Invoke();
         yield return new WaitForSeconds(animationDuration - attackDuration);
         _animationMapper[animator].IsAttacking = false;
         PlayAnimation(animator, _runAnimationName);
-        callback?.Invoke();
     }
 
     private IEnumerator HittedRoutine(Animator animator)
@@ -116,8 +111,10 @@ public class AnimationManager : MonoBehaviour
         _animationMapper[animator].IsHitted = true;
         PlayAnimation(animator, _hittedAnimationName);
         yield return null;
+        if(animator == null) yield break;
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         yield return new WaitForSeconds(stateInfo.length);
+        if (animator == null) yield break;
         _animationMapper[animator].IsHitted = false;
         PlayAnimation(animator, _runAnimationName);
     }
