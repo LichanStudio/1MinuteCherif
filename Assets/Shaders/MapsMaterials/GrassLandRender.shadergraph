@@ -494,8 +494,8 @@
     "m_ShaderOutputName": "_FlipbookSize",
     "m_StageCapability": 2,
     "m_Value": {
-        "x": 3.0,
-        "y": 3.0
+        "x": 2.0,
+        "y": 2.0
     },
     "m_DefaultValue": {
         "x": 0.0,
@@ -580,7 +580,7 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -2236.999755859375,
+            "x": -2235.999755859375,
             "y": 187.0,
             "width": 150.0,
             "height": 33.999969482421878
@@ -650,7 +650,7 @@
     "m_StageCapability": 2,
     "m_BareResource": false,
     "m_Texture": {
-        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"a446181bae3291241bd4c4e82b8e19da\",\"type\":3}}",
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"948f96f24eed96c448bf4b9216d4a3d3\",\"type\":3}}",
         "m_Guid": ""
     },
     "m_DefaultType": 0
@@ -758,7 +758,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "_NoiseGap",
     "m_StageCapability": 3,
-    "m_Value": 0.25,
+    "m_Value": 0.4300000071525574,
     "m_DefaultValue": 0.0,
     "m_Labels": [],
     "m_LiteralMode": false
@@ -821,8 +821,8 @@
     "m_ShaderOutputName": "_FlipbookSize",
     "m_StageCapability": 2,
     "m_Value": {
-        "x": 1.0,
-        "y": 1.0
+        "x": 2.0,
+        "y": 2.0
     },
     "m_DefaultValue": {
         "x": 0.0,
@@ -992,7 +992,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "_NoiseGap",
     "m_StageCapability": 3,
-    "m_Value": 0.2199999988079071,
+    "m_Value": 0.18000000715255738,
     "m_DefaultValue": 0.0,
     "m_Labels": [],
     "m_LiteralMode": false
@@ -1441,7 +1441,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "_NoiseGap",
     "m_StageCapability": 3,
-    "m_Value": 0.7300000190734863,
+    "m_Value": 0.46000000834465029,
     "m_DefaultValue": 0.0,
     "m_Labels": [],
     "m_LiteralMode": false
@@ -1769,6 +1769,9 @@
         },
         {
             "m_Id": "eec20dafaa444591a087e80c6cac7656"
+        },
+        {
+            "m_Id": "ca53ec475e754b6da19bae28cedbaee2"
         }
     ],
     "synonyms": [],
@@ -1862,7 +1865,7 @@
     "m_StageCapability": 2,
     "m_BareResource": false,
     "m_Texture": {
-        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"97aa64b0adb160447b4bab76d4a6152b\",\"type\":3}}",
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"a446181bae3291241bd4c4e82b8e19da\",\"type\":3}}",
         "m_Guid": ""
     },
     "m_DefaultType": 0
@@ -1923,7 +1926,7 @@
     "m_StageCapability": 2,
     "m_BareResource": false,
     "m_Texture": {
-        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"948f96f24eed96c448bf4b9216d4a3d3\",\"type\":3}}",
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"97aa64b0adb160447b4bab76d4a6152b\",\"type\":3}}",
         "m_Guid": ""
     },
     "m_DefaultType": 0
@@ -1984,7 +1987,7 @@
     "m_ShaderOutputName": "_FlipbookSize",
     "m_StageCapability": 2,
     "m_Value": {
-        "x": 3.0,
+        "x": 1.0,
         "y": 1.0
     },
     "m_DefaultValue": {
@@ -2042,6 +2045,31 @@
     "m_DefaultValue": 1.0,
     "m_Labels": [],
     "m_LiteralMode": false
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
+    "m_ObjectId": "ca53ec475e754b6da19bae28cedbaee2",
+    "m_Id": 3,
+    "m_DisplayName": "RGBA",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "RGBA",
+    "m_StageCapability": 2,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_Labels": []
 }
 
 {
@@ -2123,8 +2151,8 @@
     "m_ShaderOutputName": "_FlipbookSize",
     "m_StageCapability": 2,
     "m_Value": {
-        "x": 2.0,
-        "y": 2.0
+        "x": 3.0,
+        "y": 1.0
     },
     "m_DefaultValue": {
         "x": 0.0,
@@ -2194,7 +2222,7 @@
     "m_StageCapability": 2,
     "m_BareResource": false,
     "m_Texture": {
-        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"e6769517e7f0b034fb6abe18b9ccc76f\",\"type\":3}}",
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"a446181bae3291241bd4c4e82b8e19da\",\"type\":3}}",
         "m_Guid": ""
     },
     "m_DefaultType": 0

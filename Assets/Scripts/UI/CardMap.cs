@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Canvas), typeof(CanvasGroup))]
 public class CardMap : MonoBehaviour
@@ -11,21 +12,24 @@ public class CardMap : MonoBehaviour
     [SerializeField] private float _animationDuration = 1.0f;
     [SerializeField] private float _minScale = 0.04f;
     [SerializeField] private float _maxScale = 0.08f;
+    [SerializeField] private Color _defaultColor = Color.gray;
 
     [Header("Game Objects")]
+    [SerializeField] private Image _cardRenderer;
     [SerializeField] private TextMeshProUGUI _mapLabel;
+    [SerializeField] private TextMeshProUGUI _mapNumber;
 
-    private string _mapId;
+    private MapData _mapData;
     private Canvas _canvas;
     private CanvasGroup _canvasGroup;
-    private float _alpha = 1f;
+    private float _alpha = 0f;
     private int? _index = null;
     private bool _active = true;
     private float _animationTime = 0f;
     private Vector2 _initialPos = Vector2.zero;
     private Vector2 _targetPosition = Vector2.zero;
     private float _initialAlpha = 0f;
-    private float _targetAlpha = 0.5f;
+    private float _targetAlpha = 0f;
     private bool _isMoving = false;
 
     public void Start()
@@ -39,13 +43,14 @@ public class CardMap : MonoBehaviour
         if (!_isMoving) return;
 
         _animationTime += Time.deltaTime;
-        float pourcentageTemps = _animationTime / _animationDuration;
-        float progressionCourbe = _animationCurve.Evaluate(pourcentageTemps);
+        float timePercent = 0f;
+        if (_animationDuration > 0f) timePercent = _animationTime / _animationDuration;
+        float progressionCourbe = _animationCurve.Evaluate(timePercent);
 
         transform.position = Vector3.LerpUnclamped(_initialPos, _targetPosition, progressionCourbe);
         _alpha = Mathf.Lerp(_initialAlpha, _targetAlpha, progressionCourbe);
 
-        if (pourcentageTemps >= 1f)
+        if (timePercent >= 1f)
         {
             transform.position = _targetPosition;
             _alpha = _targetAlpha;
@@ -57,16 +62,16 @@ public class CardMap : MonoBehaviour
         transform.localScale = Vector3.one * Mathf.Lerp(_minScale, _maxScale, _alpha);
     }
 
-    public void SetIndex(int index)
+    public bool SetIndex(int index)
     {
-        bool change = _index != null && _index != index;
         _index = index;
+        if (_mapNumber != null) _mapNumber.text = (index + 1).ToString();
         if (_index < 0 || MapsManager.Instance == null || _index > MapsManager.Instance.GetMapsCount() - 1)
         {
-            _alpha = 0;
             Fade(0f);
-            _isMoving = true;
+            return false;
         }
+        return true;
     }
 
     public int? GetIndex()
@@ -84,21 +89,17 @@ public class CardMap : MonoBehaviour
     {
         _targetPosition = positions[index].position;
         _initialPos = transform.position;
-        _isMoving = true;
+        StartAnimate();
     }
 
     public void Fade(float targetAlpha)
     {
-        if (_canvasGroup == null)
-        {
-            _alpha = targetAlpha;
-            return;
-        }
-        _alpha = _canvasGroup.alpha;
+        if (_canvasGroup != null) _alpha = _canvasGroup.alpha;
+        else _alpha = 0f;
         _initialAlpha = _alpha;
         _targetAlpha = targetAlpha;
         _active = targetAlpha > 0f;
-        _isMoving = true;
+        StartAnimate();
     }
 
     public bool IsActive()
@@ -108,13 +109,27 @@ public class CardMap : MonoBehaviour
 
     public string GetMapId()
     {
-        return _mapId;
+        if(!_mapData) return string.Empty;
+        return _mapData.Id;
     }
 
-    public void SetMapId(string id)
+    public void SetMap(MapData mapData)
     {
-        _mapId = id;
-        if (!string.IsNullOrEmpty(id)) _mapLabel.text = id;
+        _mapData = mapData;
+        if (mapData != null && !string.IsNullOrEmpty(mapData.MapName)) _mapLabel.text = mapData.MapName;
         else _mapLabel.text = string.Empty;
+        if (_cardRenderer != null)
+        {
+            Color newColor = _defaultColor;
+            if (mapData != null && mapData.MainColor != null) newColor = mapData.MainColor;
+            newColor.a = 1f;
+            _cardRenderer.color = newColor;
+        }
+    }
+
+    public void StartAnimate()
+    {
+        _isMoving = true;
+        _animationTime = 0f;
     }
 }

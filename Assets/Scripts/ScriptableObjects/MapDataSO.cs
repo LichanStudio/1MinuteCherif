@@ -6,6 +6,13 @@ using UnityEngine;
 public class MapData : ScriptableObject
 {
     [Serializable]
+    public class Props
+    {
+        public GameObject PropPrefab;
+        public float SpwanChance = 1.0f;
+    }
+
+    [Serializable]
     public class MonsterSpawnData
     {
         public MonsterData Monster;
@@ -22,13 +29,17 @@ public class MapData : ScriptableObject
     [Header("Informations")]
     [SerializeField] private string _id;
     [SerializeField] private string _name;
+    [SerializeField] private Color _mainColor = Color.white;
     [SerializeField] private Material _material;
     [SerializeField] private List<LayerRule> _layerRule;
     [SerializeField] private List<MonsterSpawnData> _monsterSpawnData;
+    [SerializeField] private List<Props> _props = new();
 
     public List<LayerRule> LayerRules => _layerRule;
     public List<MonsterSpawnData> MonsterSpawnDataList => _monsterSpawnData;
     public string MapName => _name;
     public string Id => _id;
     public Material MapMaterial => _material;
+    public List<Props> PropsList => _props;
+    public Color MainColor => _mainColor;
 }

@@ -1,11 +1,15 @@
 [System.Serializable]
 public enum TileType
 {
+    None,
     Grass,
     Dirt,
     Water,
     Sand,
-    Stone
+    Stone,
+    Montain,
+    Snow,
+    Lava
 }
 
 [System.Serializable]

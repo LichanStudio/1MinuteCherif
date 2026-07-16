@@ -14,17 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapData
   _id: grassland
   _name: Grass land
+  _mainColor: {r: 0.65127665, g: 0.8584906, b: 0.5385814, a: 0}
   _material: {fileID: -876546973899608171, guid: 1cb9cbcdf57dfdd4e82769bf399f9028, type: 3}
   _layerRule:
-  - tileType: 4
-    threshold: 0.85
+  - tileType: 1
+    threshold: 0.46
   - tileType: 3
-    threshold: 0.8
-  - tileType: 0
-    threshold: 0.15
-  - tileType: 3
-    threshold: 0.1
-  - tileType: 2
+    threshold: 0.43
+  - tileType: 1
+    threshold: 0.18
+  - tileType: 5
     threshold: 0
   _monsterSpawnData:
   - Monster: {fileID: 11400000, guid: 6f755ff3405a4de498096f59132cd94b, type: 2}
@@ -154,3 +153,8 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+  _props:
+  - PropPrefab: {fileID: 4029900112254278082, guid: 7168c3462b7fb3e47b7ab513cc36e70f, type: 3}
+    SpwanChance: 0
+  - PropPrefab: {fileID: 8317474872744643093, guid: 97fdf1a559db752419772e4c0fb0db80, type: 3}
+    SpwanChance: 0

@@ -21,6 +21,8 @@ public static class ActionsManager
     public static Action<CharacterData> OnSelectCharacter;
     public static Action<PlayerScript, int> OnDamagePlayer;
     public static Action OnPlayerKilled;
+    public static Action OnPlayerRun;
+    public static Action OnPlayerIdle;
 
     // --------------- ENEMIES ---------------
     public static Action<EnemyScript, int> OnDamageEnemy;
@@ -30,4 +32,10 @@ public static class ActionsManager
     public static Action<int> OnSlideCards;
     public static Action OnButtonStartPressed;
     public static Action<string> OnSelectMap;
+
+    // ---------------   MAP   ---------------
+    public static Action<TileType> OnTerrainChange;
+
+    // -------------   TRIGGERS   ---------------
+    public static Action<bool> OnTriggerDialogueZone;
 }

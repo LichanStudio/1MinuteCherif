@@ -14,14 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapData
   _id: volcano
   _name: Volcano
+  _mainColor: {r: 0.8773585, g: 0.6368908, b: 0.59180313, a: 0}
   _material: {fileID: -876546973899608171, guid: 3858e386822f4f9488eb87e572668198, type: 3}
   _layerRule:
-  - tileType: 2
-    threshold: 0.658
-  - tileType: 0
-    threshold: 0.186
+  - tileType: 5
+    threshold: 0.63
+  - tileType: 8
+    threshold: 0.52
+  - tileType: 5
+    threshold: 0.38
+  - tileType: 8
+    threshold: 0
   _monsterSpawnData:
-  - Monster: {fileID: 11400000, guid: 1a7c84d36004b4141b18db8413cd1e07, type: 2}
+  - Monster: {fileID: 11400000, guid: 78171d3116dd5b04ab05f795dc2673c6, type: 2}
     SpawnChanceCurve:
       serializedVersion: 2
       m_Curve:
@@ -46,3 +51,29 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+  - Monster: {fileID: 11400000, guid: d4e2a4bef005a554a83e8d70e8614984, type: 2}
+    SpawnChanceCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  _props: []

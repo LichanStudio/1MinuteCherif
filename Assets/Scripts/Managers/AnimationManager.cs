@@ -34,6 +34,8 @@ public class AnimationManager : MonoBehaviour
     private readonly string _attackAnimationName = "attack_front";
     private readonly string _hittedAnimationName = "hitted_front";
     private readonly string _runAnimationName = "run_front";
+    private readonly string _breakAnimationName = "breaking";
+    private readonly string _breakedAnimationName = "breaked";
 
     private Dictionary<Animator, AnimationState> _animationMapper = new();
 
@@ -95,12 +97,14 @@ public class AnimationManager : MonoBehaviour
         _animationMapper[animator].IsAttacking = true;
         PlayAnimation(animator, _attackAnimationName);
         yield return null;
+        if (animator == null) yield break;
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         float animationDuration = stateInfo.length;
         float attackDuration = GetTimeOfKeyframe(animator.runtimeAnimatorController.animationClips[0], 3);
         yield return new WaitForSeconds(attackDuration);
         actionCallback?.Invoke();
         yield return new WaitForSeconds(animationDuration - attackDuration);
+        if (animator == null) yield break;
         _animationMapper[animator].IsAttacking = false;
         PlayAnimation(animator, _runAnimationName);
     }
@@ -117,6 +121,21 @@ public class AnimationManager : MonoBehaviour
         if (animator == null) yield break;
         _animationMapper[animator].IsHitted = false;
         PlayAnimation(animator, _runAnimationName);
+    }
+
+    public IEnumerator AnimateBreak(Animator animator, Action actionCallback = null)
+    {
+        if (animator == null) yield break;
+        PlayAnimation(animator, _breakAnimationName);
+        yield return null;
+        if (animator == null) yield break;
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        float animationDuration = stateInfo.length;
+        yield return new WaitForSeconds(stateInfo.length);
+        if (animator == null) yield break;
+        PlayAnimation(animator, _breakedAnimationName);
+        yield return null;
+        actionCallback?.Invoke();
     }
 
     private void PlayAnimation(Animator animator, string animationName)

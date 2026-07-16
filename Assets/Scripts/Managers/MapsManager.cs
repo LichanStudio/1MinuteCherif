@@ -10,7 +10,7 @@ public class MapsManager : MonoBehaviour
 
     public MapsRegistry MapsReg;
 
-    private string _actualMapId;
+    [SerializeField] private string _actualMapId = "grassland";
 
     private Dictionary<string, MapData> _mapsMapper = new();
 
@@ -47,10 +47,10 @@ public class MapsManager : MonoBehaviour
         return _mapsMapper.Count;
     }
 
-    public string GetIdByIndex(int index)
+    public MapData GetMapByIndex(int index)
     {
         if (index < 0 || index >= _mapsMapper.Count) return null;
-        return _mapsMapper.Keys.ToList()[index];
+        return _mapsMapper.ToList()[index].Value;
     }
 
     public MapData SetActualMap(MapData mapData)

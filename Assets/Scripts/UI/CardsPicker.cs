@@ -19,9 +19,9 @@ public class CardsPicker : MonoBehaviour
 
     public void OnEnable()
     {
-        StartSelection();
         ActionsManager.OnSlideCards += OnSlideCards;
         ActionsManager.OnButtonStartPressed += OnButtonStartPressed;
+        StartSelection(0);
     }
 
     public void OnDisable()
@@ -32,7 +32,6 @@ public class CardsPicker : MonoBehaviour
 
     public void StartSelection(int move = 0)
     {
-        Debug.Log("-----------------------------");
         MoveCards(move);
         MapsManager mapsManager = MapsManager.Instance;
         int midCardIndex = 0;
@@ -46,25 +45,22 @@ public class CardsPicker : MonoBehaviour
             card.SetPosition(i, _cardsPositions);
 
             int actuelIndex = _startIndex + i - midCardIndex;
-            Debug.Log($"startIndex : {_startIndex} // actual Index : {actuelIndex} // midCardIndex : {midCardIndex}");
-            Debug.Log(mapsManager.GetIdByIndex(actuelIndex));
             float alpha = _alphaCurve.Evaluate(i / (float)(_cardsPool.Count-1));
             int zIndex = (int)(alpha * 6f);
 
             if (i == 0 || i == _cardsPool.Count - 1) alpha = 0f;
             else if (alpha < _minAlpha) alpha = _minAlpha;
 
-            card.Fade(alpha);
             card.SetZIndex(zIndex);
-            card.SetIndex(actuelIndex);
-            if (actuelIndex > 0 && actuelIndex < mapsManager.GetMapsCount())
+            if (card.SetIndex(actuelIndex))
             {
-                card.SetMapId(mapsManager.GetIdByIndex(actuelIndex));
+                card.Fade(alpha);
+                card.SetMap(mapsManager.GetMapByIndex(actuelIndex));
                 if (_startIndex == actuelIndex) _selectedCard = card.GetMapId();
             }
             else
             {
-                card.SetMapId(null);
+                card.SetMap(null);
             }
         }
     }

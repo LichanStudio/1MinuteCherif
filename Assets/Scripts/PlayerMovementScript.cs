@@ -45,6 +45,15 @@ public class PlayerMovementScript : MonoBehaviour
             case MovementManager.MovementDirection.Right: _playerAnimator.Play(startAnimation + "right"); break;
         }
 
+        if(_lastMovementType == MovementManager.MovementType.Idle && _currentMovementType == MovementManager.MovementType.Run)
+        {
+            ActionsManager.OnPlayerRun?.Invoke();
+        }
+        else if(_lastMovementType == MovementManager.MovementType.Run && _currentMovementType == MovementManager.MovementType.Idle)
+        {
+            ActionsManager.OnPlayerIdle?.Invoke();
+        }
+
         _lastMovementDirection = _currentMovementDirection;
         _lastMovementType = _currentMovementType;
     }

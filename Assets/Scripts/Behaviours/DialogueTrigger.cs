@@ -17,6 +17,7 @@ public class DialogueTrigger : MonoBehaviour
         _zoomCoroutine = StartCoroutine(SmoothZoom(_targetZoomLevel));
         isIn = true;
         ReloadFocusPoint();
+        ActionsManager.OnTriggerDialogueZone?.Invoke(true);
     }
 
     public void OnTriggerExit2D(Collider2D collision)
@@ -25,6 +26,7 @@ public class DialogueTrigger : MonoBehaviour
         _zoomCoroutine = StartCoroutine(SmoothZoom(CameraManager.Instance.GetDefaultZoomLevel()));
         isIn = false;
         ReloadFocusPoint();
+        ActionsManager.OnTriggerDialogueZone?.Invoke(false);
     }
 
     public void ReloadFocusPoint()

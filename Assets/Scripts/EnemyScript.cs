@@ -26,6 +26,8 @@ public class EnemyScript : EntityScript
     [SerializeField] private StatusBarScript _statusBar;
     [SerializeField] private Animator _deleteAnimator;
 
+    [Header("Prefabs")]
+    [SerializeField] private GameObject _dropObject;
 
     private readonly List<Collider2D> _avoidanceResults = new();
     private Vector2 _knockbackDirection;
@@ -185,6 +187,11 @@ public class EnemyScript : EntityScript
         _dying = true;
         if (_animator != null) _animator.speed = 0f;
         if (_deleteAnimator != null) _deleteAnimator.gameObject.SetActive(true);
+        if(_dropObject != null)
+        {
+            GameObject dropObject = Instantiate(_dropObject);
+            dropObject.transform.position = transform.position;
+        }
         StartCoroutine(DieAnimation());
     }
 
