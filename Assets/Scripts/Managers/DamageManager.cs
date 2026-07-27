@@ -22,22 +22,24 @@ public class DamageManager : MonoBehaviour
             GameObject damageLabel = Instantiate(_damagePrefab, transform);
             damageLabel.SetActive(false);
         }
+        ActionsManager.OnDamageEntity += OnDamageEntity;
     }
 
-    public void OnDamagePlayer(PlayerScript playerScript, int damage)
+    public void OnDisable()
     {
-        if (playerScript == null) return;
-        float variation = 1.0f + (Random.Range(-_percentDamageVariation, _percentDamageVariation) / 100f);
-        int finalDamage = (int)(damage * variation);
-        playerScript.TakeDamage(finalDamage);
+        ActionsManager.OnDamageEntity -= OnDamageEntity;
     }
 
-    public void OnDamageEnemy(EnemyScript enemyScript, int damage)
+    public void OnDamageEntity(EntityScript entityScript, int damage)
     {
-        if (enemyScript == null) return;
+        entityScript.TakeDamage(CalculateDamage(damage), transform.GetChild(0).gameObject);
+    }
+
+    public int CalculateDamage(int baseDmg)
+    {
         float variation = 1.0f + (Random.Range(-_percentDamageVariation, _percentDamageVariation) / 100f);
-        int finalDamage = (int)(damage * variation);
-        enemyScript.TakeDamage(finalDamage, transform.GetChild(0).gameObject);
+        int finalDamage = (int)(baseDmg * variation);
+        return finalDamage;
     }
 
     public void GetBackLabelInPool(GameObject damageLabel)

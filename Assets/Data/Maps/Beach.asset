@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapData
   _id: beach
   _name: Beach
+  _order: 2
   _mainColor: {r: 0.9339623, g: 0.84940547, b: 0.7092827, a: 0}
   _material: {fileID: -876546973899608171, guid: 9b468c0887830d84fa7c3e06f051659c, type: 3}
   _layerRule:

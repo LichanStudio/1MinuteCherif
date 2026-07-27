@@ -15,6 +15,7 @@ MonoBehaviour:
   _ID: cherif
   _name: Cherif
   _animator: {fileID: -1459336179067413195, guid: ff18f5db5cc5c434eb76591638740662, type: 3}
+  _baseAtkSkill: {fileID: 11400000, guid: 3060ecac286329d49ac9ab96ac026716, type: 2}
   _weaponData: {fileID: 11400000, guid: e50e6f6b70ad756458368f37d10548be, type: 2}
   _baseStats:
     MultishotChance: 0
@@ -25,14 +26,15 @@ MonoBehaviour:
     HP: 0
     Damage: 5
   _additionnalStats:
-    MultishotChance: 0
+    MultishotChance: 47
     MultihitChance: 0
-    BounceChance: 0
+    BounceChance: 409
     PiercingChance: 0
-    Speed: 0
-    HP: 0
-    Damage: 0
+    Speed: 20
+    HP: 10
+    Damage: 10
   _isUnlockedByDefault: 0
+  _specialAtkSkill: {fileID: 11400000, guid: 77a709fd3b0b8a749b807834f20f60b0, type: 2}
   _definitiveStats:
     MultishotChance: 0
     MultihitChance: 0

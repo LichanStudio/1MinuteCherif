@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapData
   _id: grassland
   _name: Grass land
+  _order: 1
   _mainColor: {r: 0.65127665, g: 0.8584906, b: 0.5385814, a: 0}
   _material: {fileID: -876546973899608171, guid: 1cb9cbcdf57dfdd4e82769bf399f9028, type: 3}
   _layerRule:

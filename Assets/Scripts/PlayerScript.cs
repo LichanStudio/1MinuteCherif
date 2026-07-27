@@ -7,6 +7,12 @@ public class PlayerScript : EntityScript
 
     private int _damageTaken = 0;
 
+    public override void Awake()
+    {
+        base.Awake();
+        _isPlayer = true;
+    }
+
     public void OnEnable()
     {
         ActionsManager.OnDamageEnemy += OnDamageEnemy;
@@ -28,7 +34,7 @@ public class PlayerScript : EntityScript
         }*/
     }
 
-    public void TakeDamage(int damage)
+    public override void TakeDamage(int damage, GameObject dmgLabel = null)
     {
         _damageTaken += damage;
         /*_damageTaken += damage;

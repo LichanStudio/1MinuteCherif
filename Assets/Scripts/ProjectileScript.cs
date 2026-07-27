@@ -77,7 +77,7 @@ public class ProjectileScript : MonoBehaviour
             if (enemy.IsDying()) return;
             for (int i = 0; i < _countMultihits; i++)
             {
-                DamageManager.Instance.OnDamageEnemy(enemy, _damage);
+                ActionsManager.OnDamageEntity?.Invoke(enemy, _damage);
                 enemy.SetKnockbackDirection((enemy.transform.position - transform.position).normalized);
             }
         }
@@ -85,7 +85,7 @@ public class ProjectileScript : MonoBehaviour
         {
             for (int i = 0; i < _countMultihits; i++)
             {
-                DamageManager.Instance.OnDamagePlayer(player, _damage);
+                ActionsManager.OnDamageEntity?.Invoke(player, _damage);
             }
         }
 

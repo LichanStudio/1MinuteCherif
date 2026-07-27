@@ -431,6 +431,7 @@ MonoBehaviour:
   _hittedDuration: 0.1
   _hittedFlash: {r: 1, g: 1, b: 1, a: 0.4862745}
   _spriteRenderer: {fileID: 6397873607671810001}
+  _shadowRenderer: {fileID: 628646041102751956}
   _animator: {fileID: 9220293015838082707}
   _damageContainer: {fileID: 1185325726435501993}
   _attackRange: 1.5

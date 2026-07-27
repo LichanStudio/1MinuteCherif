@@ -618,6 +618,7 @@ MonoBehaviour:
   _hittedDuration: 0.1
   _hittedFlash: {r: 1, g: 1, b: 1, a: 0.29803923}
   _spriteRenderer: {fileID: 8648876757404849946}
+  _shadowRenderer: {fileID: 0}
   _animator: {fileID: 2168014114883033614}
 --- !u!50 &8589144656303272451
 Rigidbody2D:

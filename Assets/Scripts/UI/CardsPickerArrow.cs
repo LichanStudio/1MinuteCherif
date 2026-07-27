@@ -7,6 +7,7 @@ public class CardsPickerArrow : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        Debug.Log("test");
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             ActionsManager.OnSlideCards?.Invoke(_slideIncr);

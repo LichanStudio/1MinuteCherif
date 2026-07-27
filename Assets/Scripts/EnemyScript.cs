@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class EnemyScript : EntityScript
 {
@@ -49,6 +49,7 @@ public class EnemyScript : EntityScript
     {
         base.Awake();
 
+        _isPlayer = false;
         _rigidBody = GetComponent<Rigidbody2D>();
 
         _enemyContactFilter = new();
@@ -110,6 +111,10 @@ public class EnemyScript : EntityScript
                 float speed = 2f;
                 float newAlpha = Mathf.MoveTowards(_spriteRenderer.color.a, 0f, speed * Time.deltaTime);
                 _spriteRenderer.color = new Color(_spriteRenderer.color.r, _spriteRenderer.color.g, _spriteRenderer.color.b, newAlpha);
+                if (_shadowRenderer != null)
+                {
+                    _shadowRenderer.color = new Color(_spriteRenderer.color.r, _spriteRenderer.color.g, _spriteRenderer.color.b, newAlpha);
+                }
             }
         }
     }
@@ -134,8 +139,14 @@ public class EnemyScript : EntityScript
         bool isRanged = _entity.WeaponData != null && _entity.WeaponData.GetProjectileType() != WeaponData.ProjectileType.None;
         if (isRanged)
         {
+            if (gameObject == null || gameObject.IsDestroyed() || _entity == null || _entity.IsDestroyed()) return;
             Vector2 target = PlayerManager.Instance.PlayerObject.transform.position;
-            StartCoroutine(ProjectilesManager.Instance.SpawnProjectiles(_entity, transform.position, target));
+            SkillContext skillContext = new()
+            {
+                InitialPosition = transform.position,
+                TargetPosition = target,
+            };
+            StartCoroutine(ProjectilesManager.Instance.SpawnProjectiles(_entity, skillContext));
         }
         else if (PlayerManager.Instance != null && PlayerManager.Instance.PlayerObject != null)
         {
@@ -156,7 +167,7 @@ public class EnemyScript : EntityScript
         _knockbackDirection = direction.normalized;
     }
 
-    public void TakeDamage(int damage, GameObject damageObject = null)
+    public override void TakeDamage(int damage, GameObject damageObject = null)
     {
         _damageTaken += damage;
 
@@ -189,8 +200,23 @@ public class EnemyScript : EntityScript
         if (_deleteAnimator != null) _deleteAnimator.gameObject.SetActive(true);
         if(_dropObject != null)
         {
-            GameObject dropObject = Instantiate(_dropObject);
-            dropObject.transform.position = transform.position;
+            Dictionary<DropItemsData, int> dropItems = _entity.GenerateItems();
+            if (dropItems != null && dropItems.Count > 0) {
+                List < DropItemsData > dropItemsList = dropItems.Keys.ToList();
+                for (int i = 0; i < dropItemsList.Count; i++)
+                {
+                    DropItemsData dropItemData = dropItemsList[i];
+                    if (dropItemData != null)
+                    {
+                        GameObject dropObject = Instantiate(_dropObject);
+                        dropObject.transform.position = transform.position + (Vector3.one * UnityEngine.Random.Range(-0.5f, 0.5f));
+                        if (dropObject.TryGetComponent(out DropObject dropScript))
+                        {
+                            dropScript.SetDropItemData(dropItemData, dropItems[dropItemData]);
+                        }
+                    }
+                }
+            }
         }
         StartCoroutine(DieAnimation());
     }

@@ -6,6 +6,7 @@ public abstract class EntityData : ScriptableObject
     [SerializeField] private string _ID;
     [SerializeField] private string _name;
     [SerializeField] private RuntimeAnimatorController _animator;
+    [SerializeField] private SkillData _baseAtkSkill;
     [SerializeField] private WeaponData _weaponData;
 
     [Header("Stats")]
@@ -27,6 +28,7 @@ public abstract class EntityData : ScriptableObject
     public Stats AdditionnalStats => _additionnalStats;
     public RuntimeAnimatorController Animator => _animator;
     public WeaponData WeaponData => _weaponData;
+    public SkillData BaseAtkSkill => _baseAtkSkill;
 
     public void AddAditionnalStats(Stats stats)
     {
@@ -60,5 +62,15 @@ public abstract class EntityData : ScriptableObject
             _statsCalculated = true;
         }
         return _calculatedStats;
+    }
+
+    public int GetMultiShot()
+    {
+        int baseProjectiles = (int)(GetTotalStats().MultishotChance / 100f);
+        float remainingChance = GetTotalStats().MultishotChance % 100f;
+
+        if (Random.Range(0f, 100f) < remainingChance) baseProjectiles++;
+
+        return baseProjectiles;
     }
 }

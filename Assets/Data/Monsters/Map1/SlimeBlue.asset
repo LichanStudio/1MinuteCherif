@@ -33,3 +33,12 @@ MonoBehaviour:
     HP: 0
     Damage: 0
   _monsterPrefab: {fileID: 4097810212998132409, guid: 212beff5ccbe45a45836e842bb35d377, type: 3}
+  _dropItems:
+  - _itemData: {fileID: 11400000, guid: e7f1d731f60627d48af6ccddca85a05a, type: 2}
+    _dropChance: 100
+    _minDrop: 10
+    _maxDrop: 10
+  - _itemData: {fileID: 11400000, guid: 8e3f02c56d9f2594fae8ba85e6002e78, type: 2}
+    _dropChance: 5
+    _minDrop: 1
+    _maxDrop: 1

@@ -29,6 +29,7 @@ public class MapData : ScriptableObject
     [Header("Informations")]
     [SerializeField] private string _id;
     [SerializeField] private string _name;
+    [SerializeField] private int _order = 99;
     [SerializeField] private Color _mainColor = Color.white;
     [SerializeField] private Material _material;
     [SerializeField] private List<LayerRule> _layerRule;

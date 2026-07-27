@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd6ad35d4ea74004188580ae262d990f, type: 3}
+  m_Name: ZoneCone
+  m_EditorClassIdentifier: Assembly-CSharp::SkillData
+  _id: zone-cone
+  _skillName: Zone Cone
+  _skillContext:
+    Range: 0
+    Time: 0
+    Count: 0
+    PrefabZone: {fileID: 4170639707494562922, guid: c92e04efc1204d241bf9e80ef819b7f6, type: 3}
+    InitialPosition: {x: 0, y: 0, z: 0}
+    TargetPosition: {x: 0, y: 0, z: 0}
+  _behaviours:
+  - {fileID: 11400000, guid: 630d67b03a306bc4bbae965d5ee6d5d0, type: 2}

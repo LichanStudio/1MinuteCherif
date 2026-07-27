@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ProjectilesManager : MonoBehaviour
@@ -11,9 +12,20 @@ public class ProjectilesManager : MonoBehaviour
         Instance = this;
     }
 
-    public IEnumerator SpawnProjectiles(EntityData caster, Vector2 origine, Vector2 target)
+    public void SpawnProjectilesAsync(EntityData caster, SkillContext skillContext)
     {
-        int projectilesToSpawn = 1 + caster.WeaponData.GetMaxMultiHit();
+        StartCoroutine(SpawnProjectiles(caster, skillContext));
+    }
+
+    public void SpawnProjectilesSpiralAsync(EntityData caster, SkillContext skillContext)
+    {
+        StartCoroutine(SpawnProjectilesSpiral(caster, skillContext));
+    }
+
+    public IEnumerator SpawnProjectiles(EntityData caster, SkillContext skillContext)
+    {
+        if (caster == null || caster.IsDestroyed() || caster.WeaponData == null) yield break;
+        int projectilesToSpawn = 1 + caster.WeaponData.GetMaxMultiShot() + caster.GetMultiShot();
         float angle = projectilesToSpawn * 4f;
         float minAngle = -angle;
         float maxAngle = angle;
@@ -21,8 +33,24 @@ public class ProjectilesManager : MonoBehaviour
         float procAngle = range / projectilesToSpawn;
         for (int i = 0; i < projectilesToSpawn; i++)
         {
-            SpawnProjectile(caster, origine, target, minAngle + (procAngle * i));
+            if (caster == null || caster.IsDestroyed() || caster.WeaponData == null) yield break;
+            SpawnProjectile(caster, skillContext.InitialPosition, skillContext.TargetPosition, minAngle + (procAngle * i));
             yield return null;
+        }
+    }
+
+    public IEnumerator SpawnProjectilesSpiral(EntityData caster, SkillContext skillContext)
+    {
+        if (caster == null || caster.IsDestroyed() || caster.WeaponData == null) yield break;
+        float procAngle = 360f / skillContext.Count;
+        Vector3 initialTarget = skillContext.InitialPosition + new Vector3(0f, 1f, 0f);
+        float waitSeconds = skillContext.Time > 0 ? skillContext.Time / skillContext.Count : 0f;
+        for (int i = 0; i < skillContext.Count; i++)
+        {
+            if (caster == null || caster.IsDestroyed() || caster.WeaponData == null) yield break;
+            SpawnProjectile(caster, skillContext.InitialPosition, initialTarget, procAngle * i);
+            if (skillContext.Time > 0f) yield return new WaitForSeconds(waitSeconds);
+            else yield return null;
         }
     }
 
@@ -40,7 +68,6 @@ public class ProjectilesManager : MonoBehaviour
             projectile.SetInitialDirection(target, origine, angle);
             projectile.SetSpeed(weaponData.ProjectileSpeed);
             projectile.SetCasterData(CharacterManager.Instance.SelectedCharacter);
-            Debug.Log($"Projectile spawned with speed: {caster is CharacterData}");
             projectile.SetTargetEnemies(caster is CharacterData);
         }
     }

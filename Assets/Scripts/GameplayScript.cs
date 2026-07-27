@@ -1,4 +1,6 @@
 using System.Collections;
+using TMPro;
+using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -64,9 +66,19 @@ public class GameplayScript : MonoBehaviour
 
         while (_isSessionOn)
         {
-            Vector2 mousePos = Mouse.current.position.ReadValue();
-            Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
-            StartCoroutine(ProjectilesManager.Instance.SpawnProjectiles(characterData, _projectileSpawnPoint.transform.position, worldPos));
+            if (characterData != null && characterData.BaseAtkSkill != null)
+            {
+                Vector2 mousePos = Mouse.current.position.ReadValue();
+                Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
+                SkillContext skillContext = new()
+                {
+                    TargetPosition = worldPos,
+                    Count = characterData.BaseAtkSkill.Context.Count,
+                    Time = characterData.BaseAtkSkill.Context.Time,
+                    InitialPosition = _projectileSpawnPoint.transform.position
+                };
+                characterData.BaseAtkSkill.Execute(characterData, skillContext);
+            }
 
             if (characterData != null && characterData.WeaponData != null)
             {
@@ -83,6 +95,21 @@ public class GameplayScript : MonoBehaviour
     void OnClick(InputValue value)
     {
         if (!value.isPressed) return;
+        CharacterData characterData = CharacterManager.Instance.SelectedCharacter;
+
+        if (characterData != null && characterData.SpecialAtk != null)
+        {
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
+            characterData.SpecialAtk.Execute(characterData, new()
+            {
+                Count = characterData.SpecialAtk.Context.Count,
+                Time = characterData.SpecialAtk.Context.Time,
+                PrefabZone = characterData.SpecialAtk.Context.PrefabZone,
+                InitialPosition = _projectileSpawnPoint.transform.position,
+                TargetPosition = worldPos
+            });
+        }
         //if (!_isSessionOn) ActionsManager.OnStartSession?.Invoke();
     }
 

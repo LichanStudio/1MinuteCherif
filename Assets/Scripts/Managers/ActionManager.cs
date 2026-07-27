@@ -28,10 +28,15 @@ public static class ActionsManager
     public static Action<EnemyScript, int> OnDamageEnemy;
     public static Action<MonsterData> OnEntityKilled;
 
+
+    // --------------- ENTITIES ---------------
+    public static Action<EntityScript, int> OnDamageEntity;
+
     // ---------------   UI   ---------------
     public static Action<int> OnSlideCards;
     public static Action OnButtonStartPressed;
     public static Action<string> OnSelectMap;
+    public static Action<bool> OnShowActionButton;
 
     // ---------------   MAP   ---------------
     public static Action<TileType> OnTerrainChange;

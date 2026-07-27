@@ -102,7 +102,8 @@ public class AnimationManager : MonoBehaviour
         float animationDuration = stateInfo.length;
         float attackDuration = GetTimeOfKeyframe(animator.runtimeAnimatorController.animationClips[0], 3);
         yield return new WaitForSeconds(attackDuration);
-        actionCallback?.Invoke();
+        if (caster != null && !caster.IsDestroyed()) actionCallback?.Invoke();
+        else yield break;
         yield return new WaitForSeconds(animationDuration - attackDuration);
         if (animator == null) yield break;
         _animationMapper[animator].IsAttacking = false;

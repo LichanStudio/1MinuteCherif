@@ -24,10 +24,10 @@ MonoBehaviour:
       Enabled: 0
       BaseValue: 0
     Bouncing:
-      Enabled: 0
+      Enabled: 1
       BaseValue: 0
     MultiShot:
-      Enabled: 0
+      Enabled: 1
       BaseValue: 0
     MultiHit:
       Enabled: 0
