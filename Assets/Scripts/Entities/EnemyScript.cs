@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class EnemyScript : EntityScript
+public class EnemyScript : EntityScript<MonsterData>
 {
-    [Header("Settings")]
+    [Header("Monster Settings")]
     [SerializeField] private GameObject _damageContainer;
     [SerializeField] private float _attackRange = 1.5f;
     [SerializeField] private float _attackSpeed = 4f;
@@ -32,7 +31,6 @@ public class EnemyScript : EntityScript
     private readonly List<Collider2D> _avoidanceResults = new();
     private Vector2 _knockbackDirection;
     private Rigidbody2D _rigidBody;
-    private MonsterData _entity;
     private ContactFilter2D _enemyContactFilter;
     private Vector2 _cachedAvoidanceVelocity = Vector2.zero;
     private float _avoidanceCooldown = 0f;
@@ -64,6 +62,7 @@ public class EnemyScript : EntityScript
 
     public void OnEnable()
     {
+        if (_entityData != null) SetMonsterData(_entityData);
         _knockbackDirection = Vector2.zero;
         _timeSinceLastAttack = 99f;
         _damageTaken = 0;
@@ -74,17 +73,17 @@ public class EnemyScript : EntityScript
             _spriteRenderer.color = new Color(_spriteRenderer.color.r, _spriteRenderer.color.g, _spriteRenderer.color.b, 1f);
         }
         if (_statusBar != null) _statusBar.gameObject.SetActive(true);
-        ActionsManager.OnEndSession += HandleSessionEnd;
+        ActionsManager.OnEndEvent += OnEndEvent;
     }
 
     public void OnDisable()
     {
-        ActionsManager.OnEndSession -= HandleSessionEnd;
+        ActionsManager.OnEndEvent -= OnEndEvent;
     }
 
     public void FixedUpdate()
     {
-        if (_entity == null || MovementManager.Instance == null) return;
+        if (_entityData == null || MovementManager.Instance == null) return;
 
         if (!IsDying())
         {
@@ -129,37 +128,42 @@ public class EnemyScript : EntityScript
         if (_timeSinceLastAttack >= _attackSpeed && sqrDistance < sqrRange)
         {
             _timeSinceLastAttack = 0;
-            AnimationManager.Instance.StartAttackAnimation(_animator, _entity, OnAttackEntity);
+            AnimationManager.Instance.StartAttackAnimation(_animator, _entityData, OnAttackEntity);
         }
     }
 
     private void OnAttackEntity()
     {
-        if (_entity == null || _entity.IsDestroyed()) return;
-        bool isRanged = _entity.WeaponData != null && _entity.WeaponData.GetProjectileType() != WeaponData.ProjectileType.None;
+        if (this == null || _entityData == null) return;
+
+        bool isRanged = _entityData.WeaponData != null && _entityData.WeaponData.GetProjectileType() != WeaponData.ProjectileType.None;
+
         if (isRanged)
         {
-            if (gameObject == null || gameObject.IsDestroyed() || _entity == null || _entity.IsDestroyed()) return;
+            if (PlayerManager.Instance == null || PlayerManager.Instance.PlayerObject == null) return;
+
             Vector2 target = PlayerManager.Instance.PlayerObject.transform.position;
+
             SkillContext skillContext = new()
             {
                 InitialPosition = transform.position,
                 TargetPosition = target,
             };
-            StartCoroutine(ProjectilesManager.Instance.SpawnProjectiles(_entity, skillContext));
+
+            StartCoroutine(ProjectilesManager.Instance.SpawnProjectiles(this, skillContext));
         }
         else if (PlayerManager.Instance != null && PlayerManager.Instance.PlayerObject != null)
         {
             if (PlayerManager.Instance.PlayerObject.TryGetComponent(out PlayerScript playerScript))
             {
-                playerScript.TakeDamage(_entity.GetTotalStats().Damage);
+                playerScript.TakeDamage(_entityData.GetTotalStats().Damage);
             }
         }
     }
 
-    private void HandleSessionEnd()
+    private void OnEndEvent()
     {
-        if (this != null && gameObject != null) Destroy(gameObject);
+        HandleEntityKilled(false);
     }
 
     public void SetKnockbackDirection(Vector2 direction)
@@ -171,7 +175,7 @@ public class EnemyScript : EntityScript
     {
         _damageTaken += damage;
 
-        if (_statusBar != null) _statusBar.SetCurrentValue(_entity.GetTotalStats().HP - _damageTaken);
+        if (_statusBar != null) _statusBar.SetCurrentValue(_entityData.GetTotalStats().HP - _damageTaken);
         _knockbackDirection = (transform.position - PlayerManager.Instance.PlayerObject.transform.position).normalized;
         ShowDamage(damageObject, damage);
         OnHitted();
@@ -179,7 +183,7 @@ public class EnemyScript : EntityScript
         AnimationManager.Instance.StartHittedAnimation(_animator);
         PropagateForceToNeighbors(5f);
 
-        if (_damageTaken >= _entity.GetTotalStats().HP) HandleEntityKilled();
+        if (_damageTaken >= _entityData.GetTotalStats().HP) HandleEntityKilled();
     }
 
     private void RemoveDamageLabels()
@@ -193,16 +197,17 @@ public class EnemyScript : EntityScript
         }
     }
 
-    private void HandleEntityKilled()
+    private void HandleEntityKilled(bool drop = true)
     {
         _dying = true;
         if (_animator != null) _animator.speed = 0f;
         if (_deleteAnimator != null) _deleteAnimator.gameObject.SetActive(true);
-        if(_dropObject != null)
+        if (drop && _dropObject != null)
         {
-            Dictionary<DropItemsData, int> dropItems = _entity.GenerateItems();
-            if (dropItems != null && dropItems.Count > 0) {
-                List < DropItemsData > dropItemsList = dropItems.Keys.ToList();
+            Dictionary<DropItemsData, int> dropItems = _entityData.GenerateItems();
+            if (dropItems != null && dropItems.Count > 0)
+            {
+                List<DropItemsData> dropItemsList = dropItems.Keys.ToList();
                 for (int i = 0; i < dropItemsList.Count; i++)
                 {
                     DropItemsData dropItemData = dropItemsList[i];
@@ -236,30 +241,30 @@ public class EnemyScript : EntityScript
 
     public MonsterData GetEntity()
     {
-        return _entity;
+        return _entityData;
     }
 
     public void SetMonsterData(MonsterData monsterData)
     {
-        _entity = monsterData;
-        _speed = monsterData.GetTotalStats().Speed / 10f;
+        _entityData = monsterData;
+        _speed = _entityData.GetTotalStats().Speed / 10f;
         // -----------------------
         // speed
         _animationSpeed = 0.9f + (_speed / 30f); // base speed = 30 / 10f => 0.9f + 0.1f;
         if (_statusBar != null)
         {
-            _statusBar.SetMaxValue(_entity.GetTotalStats().HP);
-            _statusBar.SetCurrentValue(_entity.GetTotalStats().HP);
+            _statusBar.SetMaxValue(_entityData.GetTotalStats().HP);
+            _statusBar.SetCurrentValue(_entityData.GetTotalStats().HP);
         }
-        if (monsterData.Animator != null)
+        if (_entityData.Animator != null)
         {
-            _animator.runtimeAnimatorController = monsterData.Animator;
+            _animator.runtimeAnimatorController = _entityData.Animator;
             _animator.Play("run_front");
             _animator.speed = _animationSpeed;
         }
-        if (_entity.WeaponData != null)
+        if (_entityData.WeaponData != null)
         {
-            _attackRange = _entity.WeaponData.GetRange();
+            _attackRange = _entityData.WeaponData.GetRange();
         }
     }
 

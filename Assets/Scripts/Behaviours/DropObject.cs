@@ -21,12 +21,12 @@ public class DropObject : MonoBehaviour
 
     private void OnEnable()
     {
-        ActionsManager.OnEndSession += OnEndSession;
+        ActionsManager.OnEndEvent += OnEndEvent;
     }
 
     private void OnDisable()
     {
-        ActionsManager.OnEndSession -= OnEndSession;
+        ActionsManager.OnEndEvent -= OnEndEvent;
     }
 
     private void Update()
@@ -91,7 +91,7 @@ public class DropObject : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void OnEndSession()
+    private void OnEndEvent()
     {
         _inRange = true;
     }

@@ -9,7 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47cf39b1cc50d44478a81fb4a0c856ab, type: 3}
-  m_Name: GameData
-  m_EditorClassIdentifier: Assembly-CSharp::GameData
-  _secondsToPlay: 15
+  m_Script: {fileID: 11500000, guid: bfccb7d4bda641240a725e583dd9e86e, type: 3}
+  m_Name: MonstersWaves
+  m_EditorClassIdentifier: Assembly-CSharp::SessionEventData
+  _id: monsters-waves
+  _name: 
+  _isTimeLimited: 1

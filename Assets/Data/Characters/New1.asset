@@ -15,7 +15,7 @@ MonoBehaviour:
   _ID: Eladria
   _name: Eladria
   _animator: {fileID: 8542494022596924086, guid: 888662263778ff846a59a5eb98995d5d, type: 3}
-  _baseAtkSkill: {fileID: 0}
+  _baseAtkSkill: {fileID: 11400000, guid: 3060ecac286329d49ac9ab96ac026716, type: 2}
   _weaponData: {fileID: 11400000, guid: aff11ae44774136409ccb27fb6598172, type: 2}
   _baseStats:
     MultishotChance: 0
@@ -29,10 +29,10 @@ MonoBehaviour:
     MultishotChance: 0
     MultihitChance: 0
     BounceChance: 0
-    PiercingChance: 384
-    Speed: 45
-    HP: 73
-    Damage: 14
+    PiercingChance: 160
+    Speed: 2
+    HP: 45
+    Damage: 5
   _isUnlockedByDefault: 1
   _specialAtkSkill: {fileID: 11400000, guid: 26a32f919eb3170408cb2ec72a8c771d, type: 2}
   _definitiveStats:

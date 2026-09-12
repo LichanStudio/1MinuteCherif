@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,6 +28,7 @@ public class SkillZone : MonoBehaviour
     private PolygonCollider2D _polyCollider2D;
     private MeshFilter _filter;
     private MeshRenderer _renderer;
+    private IEntityScript _caster;
 
     void Start()
     {
@@ -37,14 +39,21 @@ public class SkillZone : MonoBehaviour
         SetupBorder(_polyCollider2D);
     }
 
-    public void OnEnable()
-    {
-        AnimateFill(1.0f);
-    }
-
     void Update()
     {
+        SetFillProgress(FillProgress);
+    }
+
+    public void SetFillProgress(float progress)
+    {
+        FillProgress = Mathf.Clamp01(progress);
         if (fillMaterial != null) fillMaterial.SetFloat("_Progress", FillProgress);
+    }
+
+    public void StartSkill(IEntityScript caster)
+    {
+        _caster = caster;
+        AnimateFill(1.0f);
     }
 
     public void GenerateMeshAndSetupMaterial()
@@ -126,7 +135,7 @@ public class SkillZone : MonoBehaviour
         StartCoroutine(FillRoutine(targetProgress));
     }
 
-    private System.Collections.IEnumerator FillRoutine(float target)
+    private IEnumerator FillRoutine(float target)
     {
         FillProgress = 0f;
         while (!Mathf.Approximately(FillProgress, target))
@@ -138,8 +147,10 @@ public class SkillZone : MonoBehaviour
         List<Collider2D> entitiesInZone = GetEntitiesInZone();
         for (int i = 0; i < entitiesInZone.Count; i++)
         {
-            Debug.Log(entitiesInZone[i].name);
-            if (entitiesInZone[i] != null && entitiesInZone[i].TryGetComponent(out EntityScript entityScript)) {
+            if (entitiesInZone[i] != null && entitiesInZone[i].TryGetComponent(out IEntityScript entityScript)) {
+                /* Skip caster to avoid self attack */
+                if (entityScript == _caster) continue;
+                /* Trigger hit ont target */
                 ActionsManager.OnDamageEntity?.Invoke(entityScript, 10);
             }
         }

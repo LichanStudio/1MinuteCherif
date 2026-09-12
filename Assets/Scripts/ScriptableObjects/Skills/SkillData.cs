@@ -10,7 +10,7 @@ public class SkillData : ScriptableObject
     [SerializeField] private SkillContext _skillContext;
     [SerializeField] private List<SkillBehaviour> _behaviours;
 
-    public void Execute(EntityData caster, SkillContext context)
+    public void Execute(IEntityScript caster, SkillContext context)
     {
         Debug.Log($"Activation de {_skillName}");
         foreach (SkillBehaviour behaviour in _behaviours)

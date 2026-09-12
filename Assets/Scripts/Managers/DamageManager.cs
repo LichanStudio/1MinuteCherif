@@ -30,7 +30,7 @@ public class DamageManager : MonoBehaviour
         ActionsManager.OnDamageEntity -= OnDamageEntity;
     }
 
-    public void OnDamageEntity(EntityScript entityScript, int damage)
+    public void OnDamageEntity(IEntityScript entityScript, int damage)
     {
         entityScript.TakeDamage(CalculateDamage(damage), transform.GetChild(0).gameObject);
     }

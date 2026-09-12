@@ -54,7 +54,7 @@ public class ActionButton : MonoBehaviour, IPointerClickHandler
         {
             ActionsManager.OnButtonStartPressed?.Invoke();
             MovementManager.Instance.RandomTeleportPlayer();
-            ActionsManager.OnStartSession?.Invoke();
+            ActionsManager.OnBeforeSessionStart?.Invoke();
         }
     }
 }

@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 [CreateAssetMenu(fileName = "NewEntity", menuName = "ScriptableObjects/Data/Entity", order = 1)]
 public class EntitySO : ScriptableObject

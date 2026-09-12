@@ -30,11 +30,14 @@ public class MapData : ScriptableObject
     [SerializeField] private string _id;
     [SerializeField] private string _name;
     [SerializeField] private int _order = 99;
+    [SerializeField] private int _minEvents = 0;
+    [SerializeField] private int _maxEvents = 0;
     [SerializeField] private Color _mainColor = Color.white;
     [SerializeField] private Material _material;
     [SerializeField] private List<LayerRule> _layerRule;
     [SerializeField] private List<MonsterSpawnData> _monsterSpawnData;
     [SerializeField] private List<Props> _props = new();
+    [SerializeField] private SessionEventData[] _possibleEvents;
 
     public List<LayerRule> LayerRules => _layerRule;
     public List<MonsterSpawnData> MonsterSpawnDataList => _monsterSpawnData;
@@ -43,4 +46,7 @@ public class MapData : ScriptableObject
     public Material MapMaterial => _material;
     public List<Props> PropsList => _props;
     public Color MainColor => _mainColor;
+    public SessionEventData[] PossibleEvents => _possibleEvents;
+    public int MinEvents => _minEvents;
+    public int MaxEvents => _maxEvents;
 }

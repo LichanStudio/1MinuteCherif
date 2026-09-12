@@ -9,7 +9,7 @@ public class MonstersManager : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private MonstersRegistry _monsterRegistry;
     [SerializeField] private float _spawnRange = 10f;
-    [SerializeField] private float _spwnMultiplier = 30f;
+    [SerializeField] private float _spawnMultiplier = 30f;
     [SerializeField] private float _rateMultiplier = 1f;
     [SerializeField] private AnimationCurve _spawnQuantityCurve;
     [SerializeField] private AnimationCurve _spawnRateCurve;
@@ -29,7 +29,8 @@ public class MonstersManager : MonoBehaviour
     public void OnEnable()
     {
         ActionsManager.OnPlayerKilled += OnPlayerKilled;
-        ActionsManager.OnStartSession += OnStartSession;
+        ActionsManager.OnStartEvent += OnStartEvent;
+        ActionsManager.OnEndEvent += OnEndEvent;
         ActionsManager.OnEndSession += OnEndSession;
         ActionsManager.OnUpdateTime += OnUpdateTime;
     }
@@ -37,20 +38,28 @@ public class MonstersManager : MonoBehaviour
     public void OnDisable()
     {
         ActionsManager.OnPlayerKilled -= OnPlayerKilled;
-        ActionsManager.OnStartSession -= OnStartSession;
+        ActionsManager.OnStartEvent -= OnStartEvent;
+        ActionsManager.OnEndEvent -= OnEndEvent;
         ActionsManager.OnEndSession -= OnEndSession;
         ActionsManager.OnUpdateTime -= OnUpdateTime;
     }
 
-    private void OnStartSession()
+    private void OnStartEvent()
     {
         _spawnMonsters = true;
+        if (_coroutine != null) StopCoroutine(_coroutine);
         _coroutine = StartCoroutine(SpawnCoroutine());
+    }
+
+    private void OnEndEvent()
+    {
+        _spawnMonsters = false;
+        if (_coroutine != null) StopCoroutine(_coroutine);
     }
 
     private void OnEndSession() {
         _spawnMonsters = false;
-        StopCoroutine(_coroutine);
+        if (_coroutine != null) StopCoroutine(_coroutine);
     }
 
     private void OnPlayerKilled()
@@ -91,7 +100,7 @@ public class MonstersManager : MonoBehaviour
     {
         while (_spawnMonsters)
         {
-            float quantity = _spawnQuantityCurve.Evaluate(GameManager.Instance.GetTimePlayed() / GameManager.Instance.GetSessionDuration()) * _spwnMultiplier;
+            float quantity = _spawnQuantityCurve.Evaluate(GameManager.Instance.GetTimePlayed() / GameManager.Instance.GetSessionDuration()) * _spawnMultiplier;
             float speed = _spawnRateCurve.Evaluate(1f - (GameManager.Instance.GetTimePlayed() / GameManager.Instance.GetSessionDuration())) / _rateMultiplier;
             if (quantity < 1f) quantity = 1f;
             for (int i = 0; i < quantity; i++)

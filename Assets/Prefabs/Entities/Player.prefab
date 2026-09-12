@@ -585,7 +585,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1540fec0dcb205546bebcf9ea506a2b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameplayScript
-  _projectileSpawnPoint: {fileID: 8451176653809532006}
   _projectilePrefab: {fileID: 6342127833248704996, guid: 9c268c0fe6c6bd34d923d8377a60ce12, type: 3}
   _EscUI: {fileID: 8451176653809532006}
 --- !u!114 &4434260614638297102
@@ -615,11 +614,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a16dea9b5468b54fb2aced87802eb1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerScript
+  _entityData: {fileID: 11400000, guid: 12087c1df83e43b4c8aa02227132fe96, type: 2}
   _hittedDuration: 0.1
   _hittedFlash: {r: 1, g: 1, b: 1, a: 0.29803923}
   _spriteRenderer: {fileID: 8648876757404849946}
   _shadowRenderer: {fileID: 0}
   _animator: {fileID: 2168014114883033614}
+  _projectileSpawnPoint: {fileID: 8451176653809532006}
 --- !u!50 &8589144656303272451
 Rigidbody2D:
   serializedVersion: 5

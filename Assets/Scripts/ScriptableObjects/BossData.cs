@@ -6,5 +6,5 @@ using UnityEngine;
 public class BossData : MonsterData
 {
     [Header("Boss Specific Informations")]
-    [SerializeField] private List<EntityScript.EntitySkill> _skills = new();
+    [SerializeField] private List<EntityScript<EntityData>.EntitySkill> _skills = new();
 }

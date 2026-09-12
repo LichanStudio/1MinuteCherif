@@ -1,5 +1,4 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
 
 public class TimeManager : MonoBehaviour
@@ -28,7 +27,7 @@ public class TimeManager : MonoBehaviour
     public void OnEnable()
     {
         ActionsManager.OnPlayerKilled += OnPlayerKilled;
-        ActionsManager.OnStartSession += OnStartSession;
+        ActionsManager.OnStartEvent += OnStartEvent;
         ActionsManager.OnSelectUpgrade += OnSelectUpgrade;
         ActionsManager.OnStartUpgradeSelection += OnStartUpgradeSelection;
         StartTimer();
@@ -36,14 +35,14 @@ public class TimeManager : MonoBehaviour
 
     public void OnDisable()
     {
-        ActionsManager.OnStartSession -= OnStartSession;
+        ActionsManager.OnStartEvent -= OnStartEvent;
         ActionsManager.OnPlayerKilled -= OnPlayerKilled;
         ActionsManager.OnSelectUpgrade -= OnSelectUpgrade;
         ActionsManager.OnStartUpgradeSelection -= OnStartUpgradeSelection;
         StopTimer();
     }
 
-    private void OnStartSession()
+    private void OnStartEvent()
     {
         _isPlaying = true;
         _isPickingUpgrade = false;
@@ -55,7 +54,7 @@ public class TimeManager : MonoBehaviour
     private void UpdateTime()
     {
         if (!GameManager.Instance.IsGamePaused()) ActionsManager.OnUpdateTime?.Invoke(_secondsPlayed, GameManager.Instance.GetSessionDuration());
-        else ActionsManager.OnUpdateRealTime?.Invoke();
+        ActionsManager.OnUpdateRealTime?.Invoke();
     }
 
     private IEnumerator AddSecondEverySecond()
@@ -69,12 +68,12 @@ public class TimeManager : MonoBehaviour
             if (_isPickingUpgrade) _secondsPickUpgrade++;
             UpdateTime();
 
-            if (!_isPickingUpgrade)
+            if (!_isPickingUpgrade && _isPlaying)
             {
                 if (GetSecondsLeft() <= 0)
                 {
-                    ActionsManager.OnEndSession?.Invoke();
-                    yield break;
+                    _isPlaying = false;
+                    ActionsManager.OnEndEvent?.Invoke();
                 }
                 if (_secondsPlayed > 1 && GetSecondsLeft() % 10 == 0)
                 {
